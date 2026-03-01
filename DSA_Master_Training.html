@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Master Training — C++ & Python</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --easy: #3fb950;
+    --medium: #f78166;
+    --hard: #d2a8ff;
+    --company: #ffa657;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; }
+  
+  /* SIDEBAR */
+  #sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 260px;
+    background: var(--surface); border-right: 1px solid var(--border);
+    overflow-y: auto; z-index: 100;
+  }
+  #sidebar h2 { padding: 16px; font-size: 14px; color: var(--accent); border-bottom: 1px solid var(--border); }
+  .nav-item {
+    padding: 10px 16px; cursor: pointer; font-size: 13px;
+    color: var(--text2); border-left: 3px solid transparent;
+    transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { border-left-color: var(--accent); color: var(--accent); background: var(--surface2); }
+  .nav-num { font-size: 11px; color: var(--text2); min-width: 18px; }
+  .progress-bar { height: 3px; background: var(--border); margin: 0 16px 8px; border-radius: 2px; }
+  .progress-fill { height: 100%; background: var(--accent2); border-radius: 2px; transition: width 0.3s; }
+
+  /* MAIN */
+  #main { margin-left: 260px; padding: 32px; max-width: 1100px; }
+  
+  /* HEADER */
+  .hero { background: linear-gradient(135deg, #1a2332, #0d1117); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 32px; }
+  .hero h1 { font-size: 28px; color: var(--accent); margin-bottom: 8px; }
+  .hero p { color: var(--text2); font-size: 15px; line-height: 1.6; }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .badge-cpp { background: #1a3a5c; color: #58a6ff; }
+  .badge-py { background: #1a3a1a; color: #3fb950; }
+  .badge-lc { background: #3a2a1a; color: #ffa657; }
+
+  /* TOPIC CARD */
+  .topic-section { display: none; }
+  .topic-section.active { display: block; }
+  .topic-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+  .topic-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .topic-title { font-size: 24px; font-weight: 700; }
+  .topic-subtitle { font-size: 13px; color: var(--text2); }
+
+  /* CARDS */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  
+  /* THEORY */
+  .theory-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 800px) { .theory-grid { grid-template-columns: 1fr; } #sidebar { width: 200px; } #main { margin-left: 200px; } }
+  
+  .note-box { background: #1a2a1a; border: 1px solid #2d4a2d; border-radius: 8px; padding: 14px; margin: 8px 0; }
+  .note-box .note-title { color: var(--accent2); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .note-box p, .note-box li { color: var(--text2); font-size: 13px; line-height: 1.6; }
+  .warn-box { background: #2a1a0a; border: 1px solid #5a3a1a; border-radius: 8px; padding: 14px; margin: 8px 0; }
+  .warn-box .note-title { color: var(--accent5); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+  .complexity-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 8px 0; }
+  .complexity-table th { background: var(--surface2); padding: 8px 12px; text-align: left; color: var(--accent); font-size: 12px; }
+  .complexity-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .complexity-table tr:hover td { background: var(--surface2); }
+
+  /* CODE */
+  pre { background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; font-size: 12px; line-height: 1.6; margin: 8px 0; }
+  code { font-family: 'Cascadia Code', 'JetBrains Mono', monospace; }
+  .lang-tabs { display: flex; gap: 0; margin-bottom: -1px; }
+  .lang-tab { padding: 6px 14px; font-size: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); border-radius: 6px 6px 0 0; }
+  .lang-tab.active { background: var(--surface); color: var(--accent); border-bottom-color: var(--surface); }
+  .code-block { border: 1px solid var(--border); border-radius: 0 6px 6px 6px; }
+
+  /* QUESTIONS */
+  .questions-section { margin-top: 8px; }
+  .difficulty-group { margin-bottom: 20px; }
+  .difficulty-label { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+  .diff-easy { background: #0d2a0d; color: var(--easy); }
+  .diff-medium { background: #2a1a0a; color: var(--medium); }
+  .diff-hard { background: #1a0d2a; color: var(--hard); }
+  
+  .q-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .q-item:last-child { border-bottom: none; }
+  .q-check { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; cursor: pointer; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; }
+  .q-check.done { background: var(--accent2); border-color: var(--accent2); }
+  .q-check.done::after { content: '✓'; color: white; font-size: 10px; }
+  .q-info { flex: 1; }
+  .q-name { font-size: 13px; color: var(--text); }
+  .q-name a { color: var(--text); text-decoration: none; }
+  .q-name a:hover { color: var(--accent); }
+  .q-meta { display: flex; gap: 8px; margin-top: 3px; flex-wrap: wrap; }
+  .q-tag { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: var(--surface2); color: var(--text2); }
+  .q-company { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #2a1a0a; color: var(--company); }
+  .q-pattern { font-size: 11px; padding: 1px 6px; border-radius: 3px; background: #1a1a2a; color: var(--accent4); }
+  
+  /* STATS BAR */
+  .stats-bar { display: flex; gap: 20px; padding: 16px 20px; background: var(--surface2); border-radius: 8px; margin-bottom: 24px; }
+  .stat { text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; color: var(--text2); }
+  
+  /* GITHUB SECTION */
+  .github-setup { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
+  .step-item { display: flex; gap: 14px; margin-bottom: 16px; }
+  .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--bg); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-content h4 { font-size: 14px; margin-bottom: 4px; }
+  .step-content p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  
+  /* SEARCH */
+  #search { width: 100%; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; margin-bottom: 8px; }
+  #search:focus { outline: none; border-color: var(--accent); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .section-divider { height: 1px; background: var(--border); margin: 20px 0; }
+  ul.theory-list { padding-left: 16px; }
+  ul.theory-list li { color: var(--text2); font-size: 13px; line-height: 1.7; }
+  strong.highlight { color: var(--accent5); }
+  strong.green { color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+  <h2>🚀 DSA Master Training</h2>
+  <input id="search" placeholder="Search topics..." oninput="filterTopics(this.value)" />
+  <div class="progress-bar"><div class="progress-fill" id="globalProgress" style="width:0%"></div></div>
+  <div id="nav-list"></div>
+</div>
+
+<div id="main">
+  <!-- HERO -->
+  <div class="hero" id="section-home">
+    <h1>🧠 DSA Master Training</h1>
+    <p>Your complete roadmap to mastering Data Structures & Algorithms. Each topic includes concise theory, key notes, C++/Python templates, and curated LeetCode questions (with company tags) from beginner → advanced.</p>
+    <div class="badges">
+      <span class="badge badge-cpp">C++</span>
+      <span class="badge badge-py">Python</span>
+      <span class="badge badge-lc">LeetCode</span>
+      <span class="badge" style="background:#1a2a3a;color:#58a6ff;">Company-wise</span>
+      <span class="badge" style="background:#2a1a2a;color:#d2a8ff;">~400+ Questions</span>
+    </div>
+    <div class="stats-bar" style="margin-top:20px;margin-bottom:0;">
+      <div class="stat"><div class="stat-num" id="total-done">0</div><div class="stat-label">Solved</div></div>
+      <div class="stat"><div class="stat-num" id="total-qs">0</div><div class="stat-label">Total</div></div>
+      <div class="stat"><div class="stat-num" id="pct-done">0%</div><div class="stat-label">Progress</div></div>
+      <div class="stat"><div class="stat-num">18</div><div class="stat-label">Topics</div></div>
+    </div>
+  </div>
+
+  <!-- TOPICS INJECTED BY JS -->
+  <div id="topics-container"></div>
+  
+  <!-- GITHUB GUIDE -->
+  <div id="section-github" class="topic-section">
+    <div class="topic-header">
+      <div class="topic-icon" style="background:#1a2a1a;">🐙</div>
+      <div><div class="topic-title">GitHub Setup & Daily Practice</div><div class="topic-subtitle">How to track your progress and study daily</div></div>
+    </div>
+    <div class="github-setup">
+      <div class="card-title">📂 Recommended Repo Structure</div>
+      <pre><code>dsa-training/
+├── README.md            ← Your progress tracker
+├── roadmap.md           ← This training plan
+├── solutions/
+│   ├── arrays/
+│   │   ├── two_sum.cpp
+│   │   ├── two_sum.py
+│   │   └── notes.md
+│   ├── binary_search/
+│   ├── strings/
+│   ├── linked_list/
+│   ├── recursion/
+│   ├── bit_manipulation/
+│   ├── stacks/
+│   ├── queues/
+│   ├── sliding_window/
+│   ├── two_pointers/
+│   ├── heaps/
+│   ├── greedy/
+│   ├── binary_trees/
+│   ├── bst/
+│   ├── graphs/
+│   ├── dp/
+│   └── tries/
+└── company_prep/
+    ├── google.md
+    ├── amazon.md
+    ├── meta.md
+    ├── microsoft.md
+    └── tcs_wipro_infosys.md</code></pre>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">🔧 Setup Commands</div>
+      <pre><code>git init dsa-training
+cd dsa-training
+git remote add origin https://github.com/YOUR_USERNAME/dsa-training.git
+
+# Daily workflow
+git add solutions/arrays/two_sum.cpp
+git commit -m "✅ [Arrays] Two Sum - O(n) hashmap approach"
+git push origin main</code></pre>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">📅 Daily Study Plan</div>
+      <div class="step-item"><div class="step-num">1</div><div class="step-content"><h4>Morning (30 min) — Theory</h4><p>Read the topic theory, understand the pattern, write key notes in your <code>solutions/topic/notes.md</code></p></div></div>
+      <div class="step-item"><div class="step-num">2</div><div class="step-content"><h4>Afternoon (60–90 min) — Solve</h4><p>Solve 2–3 Easy + 1–2 Medium questions. Time yourself: Easy ≤ 15 min, Medium ≤ 30 min, Hard ≤ 45 min.</p></div></div>
+      <div class="step-item"><div class="step-num">3</div><div class="step-content"><h4>Evening (20 min) — Review</h4><p>Re-solve failed problems without looking. Push solutions to GitHub with meaningful commit messages.</p></div></div>
+      <div class="step-item"><div class="step-num">4</div><div class="step-content"><h4>Weekly (Sunday)</h4><p>Mock interview: pick 1 Easy + 2 Medium from a company section. Solve in 90 min with no hints. Update README.md stats.</p></div></div>
+      <div class="note-box" style="margin-top:12px;">
+        <div class="note-title">📌 Commit Message Convention</div>
+        <p>✅ [Topic] Problem Name - Approach used - Time/Space<br>
+        Example: <code>✅ [Graphs] Number of Islands - BFS - O(m*n)</code></p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">🏢 Company-wise LeetCode Resource</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:10px;">Use this GitHub repo for company-specific questions:</p>
+      <pre><code>https://github.com/krishna-sasank9/leetcode-companywise-interview-questions
+
+# Top companies to focus on:
+# FAANG: google/, meta/, amazon/, apple/, netflix/
+# Product: microsoft/, adobe/, uber/, airbnb/
+# Indian MNCs: tcs/, infosys/, wipro/, cognizant/</code></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== TOPIC DATA =====
+const TOPICS = [
+{
+  id: 'arrays', icon: '📊', color: '#1a3a5c', title: 'Arrays',
+  theory: `<b>Core Concept:</b> Contiguous memory blocks. O(1) access by index. Foundation for all other structures.
+  <br><br><b>Key Operations:</b> Access O(1), Search O(n), Insert/Delete O(n).
+  <br><br><b>Patterns to Master:</b> Prefix Sum, Kadane's Algorithm, Dutch National Flag, In-place manipulation, Sorting tricks.`,
+  notes: [
+    '🔑 Prefix sum: precompute cumulative sums for O(1) range queries',
+    '🔑 Kadane\'s: max_sum = max(num, max_sum + num) — greedy subarray',
+    '🔑 Dutch National Flag: 3-way partition with lo/mid/hi pointers',
+    '🔑 Always check: empty array, single element, all negatives',
+    '🔑 In-place XOR swap: a^=b; b^=a; a^=b (no extra space)',
+    '🔑 When sorting helps — always think "can I sort first?"',
+  ],
+  complexity: [
+    ['Access', 'O(1)', 'O(1)'],
+    ['Search (unsorted)', 'O(n)', 'O(1)'],
+    ['Insert at end', 'O(1) amortized', 'O(1)'],
+    ['Insert at i', 'O(n)', 'O(1)'],
+    ['Prefix Sum build', 'O(n)', 'O(n)'],
+    ['Kadane\'s Algo', 'O(n)', 'O(1)'],
+  ],
+  cpp: `// Prefix Sum
+vector<int> prefix(n+1, 0);
+for(int i=0;i<n;i++) prefix[i+1]=prefix[i]+arr[i];
+int rangeSum = prefix[r+1]-prefix[l]; // sum [l..r]
+
+// Kadane's Algorithm
+int maxSum=arr[0], cur=arr[0];
+for(int i=1;i<n;i++){
+  cur = max(arr[i], cur+arr[i]);
+  maxSum = max(maxSum, cur);
+}
+
+// Two Pointer sort + search
+sort(arr.begin(), arr.end());
+int lo=0, hi=n-1;
+while(lo<hi){ /* ... */ }`,
+  python: `# Prefix Sum
+prefix = [0]*(n+1)
+for i in range(n):
+    prefix[i+1] = prefix[i]+arr[i]
+range_sum = prefix[r+1]-prefix[l]  # sum [l..r]
+
+# Kadane's Algorithm  
+max_sum = cur = arr[0]
+for x in arr[1:]:
+    cur = max(x, cur+x)
+    max_sum = max(max_sum, cur)
+
+# Enumerate with index
+for i, val in enumerate(arr):
+    pass`,
+  questions: {
+    easy: [
+      { name: 'Two Sum', url: 'https://leetcode.com/problems/two-sum/', companies: ['Google','Amazon','Meta','Microsoft'], pattern: 'Hashmap' },
+      { name: 'Best Time to Buy and Sell Stock', url: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', companies: ['Amazon','Google','Apple'], pattern: 'Greedy/Kadane' },
+      { name: 'Contains Duplicate', url: 'https://leetcode.com/problems/contains-duplicate/', companies: ['Amazon','Meta'], pattern: 'Hashset' },
+      { name: 'Maximum Subarray (Kadane)', url: 'https://leetcode.com/problems/maximum-subarray/', companies: ['Amazon','Google','Microsoft'], pattern: 'Kadane' },
+      { name: 'Move Zeroes', url: 'https://leetcode.com/problems/move-zeroes/', companies: ['Google','Meta','Microsoft'], pattern: 'Two Pointer' },
+      { name: 'Single Number', url: 'https://leetcode.com/problems/single-number/', companies: ['Amazon','TCS'], pattern: 'XOR' },
+      { name: 'Intersection of Two Arrays II', url: 'https://leetcode.com/problems/intersection-of-two-arrays-ii/', companies: ['Amazon','Google'], pattern: 'Hashmap' },
+      { name: 'Find All Numbers Disappeared', url: 'https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/', companies: ['Infosys'], pattern: 'Index Marking' },
+      { name: 'Squares of Sorted Array', url: 'https://leetcode.com/problems/squares-of-a-sorted-array/', companies: ['Google','Amazon'], pattern: 'Two Pointer' },
+      { name: 'Running Sum of 1d Array', url: 'https://leetcode.com/problems/running-sum-of-1d-array/', companies: ['Amazon'], pattern: 'Prefix Sum' },
+    ],
+    medium: [
+      { name: 'Product of Array Except Self', url: 'https://leetcode.com/problems/product-of-array-except-self/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Prefix Product' },
+      { name: 'Maximum Product Subarray', url: 'https://leetcode.com/problems/maximum-product-subarray/', companies: ['Amazon','Google'], pattern: 'DP/Kadane variant' },
+      { name: 'Find Minimum in Rotated Array', url: 'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/', companies: ['Amazon','Google','Microsoft'], pattern: 'Binary Search' },
+      { name: 'Search in Rotated Sorted Array', url: 'https://leetcode.com/problems/search-in-rotated-sorted-array/', companies: ['Amazon','Meta','Google','Uber'], pattern: 'Binary Search' },
+      { name: '3Sum', url: 'https://leetcode.com/problems/3sum/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Sort + Two Pointer' },
+      { name: 'Container With Most Water', url: 'https://leetcode.com/problems/container-with-most-water/', companies: ['Amazon','Google','Meta'], pattern: 'Two Pointer' },
+      { name: 'Subarray Sum Equals K', url: 'https://leetcode.com/problems/subarray-sum-equals-k/', companies: ['Facebook','Google','Amazon'], pattern: 'Prefix Sum + Hashmap' },
+      { name: 'Sort Colors (DNF)', url: 'https://leetcode.com/problems/sort-colors/', companies: ['Microsoft','Adobe'], pattern: 'Dutch National Flag' },
+      { name: 'Next Permutation', url: 'https://leetcode.com/problems/next-permutation/', companies: ['Google','Amazon'], pattern: 'Array manipulation' },
+      { name: 'Rotate Array', url: 'https://leetcode.com/problems/rotate-array/', companies: ['Microsoft','Amazon'], pattern: 'Reversal' },
+      { name: 'Jump Game', url: 'https://leetcode.com/problems/jump-game/', companies: ['Amazon','Google','Microsoft'], pattern: 'Greedy' },
+      { name: 'Merge Intervals', url: 'https://leetcode.com/problems/merge-intervals/', companies: ['Google','Amazon','Meta','Microsoft'], pattern: 'Sort + Greedy' },
+    ],
+    hard: [
+      { name: 'Trapping Rain Water', url: 'https://leetcode.com/problems/trapping-rain-water/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Two Pointer / Stack' },
+      { name: 'First Missing Positive', url: 'https://leetcode.com/problems/first-missing-positive/', companies: ['Amazon','Google'], pattern: 'Index Marking' },
+      { name: 'Median of Two Sorted Arrays', url: 'https://leetcode.com/problems/median-of-two-sorted-arrays/', companies: ['Google','Amazon','Apple'], pattern: 'Binary Search' },
+      { name: 'Maximum Gap', url: 'https://leetcode.com/problems/maximum-gap/', companies: ['Amazon'], pattern: 'Bucket Sort' },
+      { name: 'Jump Game II', url: 'https://leetcode.com/problems/jump-game-ii/', companies: ['Amazon','Google'], pattern: 'Greedy BFS' },
+    ]
+  }
+},
+{
+  id: 'binary-search', icon: '🔍', color: '#1a2a3a', title: 'Binary Search',
+  theory: `<b>Core Concept:</b> Divide & conquer on sorted arrays. Reduces O(n) search to O(log n).<br><br>
+  <b>Template types:</b><br>
+  • <b>Standard:</b> exact match, lo=0 hi=n-1<br>
+  • <b>Left boundary:</b> first occurrence / lower_bound<br>
+  • <b>Right boundary:</b> last occurrence / upper_bound<br>
+  • <b>On Answer:</b> binary search on the answer space (not array)`,
+  notes: [
+    '🔑 Always write: lo=0, hi=n-1, while(lo<=hi), mid=lo+(hi-lo)/2',
+    '🔑 Avoid overflow: use mid = lo + (hi-lo)/2 NOT (lo+hi)/2',
+    '🔑 "Binary search on answer" — when answer is monotonic (e.g., min max, feasibility check)',
+    '🔑 When array has duplicates: use lower_bound / upper_bound pattern',
+    '🔑 Off-by-one is the #1 bug — be careful with lo=mid+1 vs lo=mid',
+    '🔑 Think binary search whenever: sorted, monotonic condition, O(log n) required',
+  ],
+  complexity: [
+    ['Binary Search', 'O(log n)', 'O(1)'],
+    ['Binary Search Recursive', 'O(log n)', 'O(log n)'],
+    ['Lower Bound', 'O(log n)', 'O(1)'],
+    ['Upper Bound', 'O(log n)', 'O(1)'],
+  ],
+  cpp: `// Standard Binary Search
+int lo=0, hi=n-1, ans=-1;
+while(lo<=hi){
+  int mid=lo+(hi-lo)/2;
+  if(arr[mid]==target){ ans=mid; break; }
+  else if(arr[mid]<target) lo=mid+1;
+  else hi=mid-1;
+}
+
+// Lower Bound (first >= target)
+int lo=0, hi=n;
+while(lo<hi){
+  int mid=lo+(hi-lo)/2;
+  if(arr[mid]<target) lo=mid+1;
+  else hi=mid;
+}
+// lo = index of first element >= target
+
+// Binary Search on Answer
+int lo=1, hi=max_val, ans=-1;
+while(lo<=hi){
+  int mid=lo+(hi-lo)/2;
+  if(feasible(mid)){ ans=mid; hi=mid-1; } // minimize
+  else lo=mid+1;
+}`,
+  python: `# Standard Binary Search
+lo, hi = 0, len(arr)-1
+while lo <= hi:
+    mid = (lo+hi)//2
+    if arr[mid] == target: return mid
+    elif arr[mid] < target: lo = mid+1
+    else: hi = mid-1
+
+# Lower Bound
+import bisect
+idx = bisect.bisect_left(arr, target)   # first >= target
+idx = bisect.bisect_right(arr, target)  # first > target
+
+# Binary Search on Answer
+lo, hi = 1, max_val
+while lo <= hi:
+    mid = (lo+hi)//2
+    if feasible(mid): ans=mid; hi=mid-1
+    else: lo=mid+1`,
+  questions: {
+    easy: [
+      { name: 'Binary Search', url: 'https://leetcode.com/problems/binary-search/', companies: ['Amazon','Google'], pattern: 'Standard BS' },
+      { name: 'Search Insert Position', url: 'https://leetcode.com/problems/search-insert-position/', companies: ['Amazon','Microsoft'], pattern: 'Lower Bound' },
+      { name: 'First Bad Version', url: 'https://leetcode.com/problems/first-bad-version/', companies: ['Amazon','Meta'], pattern: 'Binary Search' },
+      { name: 'Sqrt(x)', url: 'https://leetcode.com/problems/sqrtx/', companies: ['Amazon','Google'], pattern: 'BS on Answer' },
+      { name: 'Count Negative Numbers in Sorted Matrix', url: 'https://leetcode.com/problems/count-negative-numbers-in-a-sorted-matrix/', companies: ['Google'], pattern: 'Binary Search' },
+      { name: 'Guess Number Higher or Lower', url: 'https://leetcode.com/problems/guess-number-higher-or-lower/', companies: ['Amazon'], pattern: 'Binary Search' },
+    ],
+    medium: [
+      { name: 'Find First and Last Position', url: 'https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/', companies: ['Amazon','Google','Meta'], pattern: 'Lower/Upper Bound' },
+      { name: 'Search in Rotated Sorted Array', url: 'https://leetcode.com/problems/search-in-rotated-sorted-array/', companies: ['Amazon','Meta','Google'], pattern: 'Modified BS' },
+      { name: 'Find Peak Element', url: 'https://leetcode.com/problems/find-peak-element/', companies: ['Google','Microsoft'], pattern: 'Binary Search' },
+      { name: 'Koko Eating Bananas', url: 'https://leetcode.com/problems/koko-eating-bananas/', companies: ['Amazon','Google'], pattern: 'BS on Answer' },
+      { name: 'Capacity To Ship Packages', url: 'https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/', companies: ['Amazon'], pattern: 'BS on Answer' },
+      { name: 'Time Based Key-Value Store', url: 'https://leetcode.com/problems/time-based-key-value-store/', companies: ['Amazon','Google'], pattern: 'BS + Design' },
+      { name: 'Search a 2D Matrix', url: 'https://leetcode.com/problems/search-a-2d-matrix/', companies: ['Amazon','Google','Meta'], pattern: 'Matrix BS' },
+      { name: 'Find Minimum in Rotated Array', url: 'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/', companies: ['Amazon','Microsoft'], pattern: 'Modified BS' },
+    ],
+    hard: [
+      { name: 'Median of Two Sorted Arrays', url: 'https://leetcode.com/problems/median-of-two-sorted-arrays/', companies: ['Google','Amazon','Apple'], pattern: 'Binary Search' },
+      { name: 'Split Array Largest Sum', url: 'https://leetcode.com/problems/split-array-largest-sum/', companies: ['Google','Facebook'], pattern: 'BS on Answer' },
+      { name: 'Kth Smallest in Sorted Matrix', url: 'https://leetcode.com/problems/kth-smallest-element-in-a-sorted-matrix/', companies: ['Amazon','Google'], pattern: 'BS on Answer' },
+      { name: 'Find in Mountain Array', url: 'https://leetcode.com/problems/find-in-mountain-array/', companies: ['Google'], pattern: 'Binary Search' },
+    ]
+  }
+},
+{
+  id: 'strings', icon: '🔤', color: '#2a1a3a', title: 'Strings',
+  theory: `<b>Core Concept:</b> Strings are character arrays. In C++ they're mutable; in Python they're immutable.<br><br>
+  <b>Key Patterns:</b><br>
+  • Sliding Window for substrings<br>
+  • Two Pointers for palindromes<br>
+  • Hashing / frequency arrays for anagrams<br>
+  • KMP / Rabin-Karp for pattern matching`,
+  notes: [
+    '🔑 Always check edge cases: empty string, single char, all same chars',
+    '🔑 Frequency array of size 26 is faster than hashmap for lowercase letters',
+    '🔑 Palindrome check: two pointer from both ends OR expand from center',
+    '🔑 Anagram: sort both strings OR compare frequency arrays',
+    '🔑 String building in C++: use stringstream. In Python: join() instead of concatenation',
+    '🔑 KMP fails to understand? Just remember: prefix = suffix pattern for partial match table',
+    '🔑 ASCII trick: char - \'a\' gives 0-25 index for lowercase letters',
+  ],
+  complexity: [
+    ['Access char', 'O(1)', 'O(1)'],
+    ['Substring', 'O(k)', 'O(k)'],
+    ['Find/Search', 'O(n*m)', 'O(n*m)'],
+    ['KMP Search', 'O(n+m)', 'O(m)'],
+    ['Sort string', 'O(n log n)', 'O(n)'],
+    ['Reverse', 'O(n)', 'O(1) or O(n)'],
+  ],
+  cpp: `// Frequency count
+int freq[26] = {};
+for(char c : s) freq[c-'a']++;
+
+// Palindrome check (two pointer)
+int lo=0, hi=s.size()-1;
+while(lo<hi){ if(s[lo++]!=s[hi--]) return false; }
+
+// String reversal
+reverse(s.begin(), s.end());
+
+// Substring
+string sub = s.substr(start, length);
+
+// Split by delimiter
+stringstream ss(s);
+string token;
+while(getline(ss, token, ' ')) words.push_back(token);`,
+  python: `# Frequency count
+from collections import Counter
+freq = Counter(s)
+
+# Palindrome
+def is_palindrome(s):
+    return s == s[::-1]
+
+# Anagram check
+Counter(s) == Counter(t)
+
+# All permutations sorted
+sorted(s) == sorted(t)
+
+# String building (efficient)
+result = ''.join(chars)  # NOT: result += c (O(n^2))
+
+# Find all occurrences
+import re
+positions = [m.start() for m in re.finditer(pattern, s)]`,
+  questions: {
+    easy: [
+      { name: 'Valid Anagram', url: 'https://leetcode.com/problems/valid-anagram/', companies: ['Amazon','Google'], pattern: 'Frequency Array' },
+      { name: 'Valid Palindrome', url: 'https://leetcode.com/problems/valid-palindrome/', companies: ['Meta','Microsoft'], pattern: 'Two Pointer' },
+      { name: 'Reverse String', url: 'https://leetcode.com/problems/reverse-string/', companies: ['Amazon','TCS'], pattern: 'Two Pointer' },
+      { name: 'First Unique Character', url: 'https://leetcode.com/problems/first-unique-character-in-a-string/', companies: ['Amazon','Google'], pattern: 'Frequency' },
+      { name: 'Longest Common Prefix', url: 'https://leetcode.com/problems/longest-common-prefix/', companies: ['Amazon','Google'], pattern: 'Vertical Scan' },
+      { name: 'Implement strStr()', url: 'https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/', companies: ['Google','Amazon'], pattern: 'String Match / KMP' },
+      { name: 'Reverse Vowels', url: 'https://leetcode.com/problems/reverse-vowels-of-a-string/', companies: ['Google'], pattern: 'Two Pointer' },
+    ],
+    medium: [
+      { name: 'Longest Substring Without Repeating', url: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Sliding Window' },
+      { name: 'Longest Palindromic Substring', url: 'https://leetcode.com/problems/longest-palindromic-substring/', companies: ['Amazon','Google','Microsoft'], pattern: 'Expand Center / DP' },
+      { name: 'Group Anagrams', url: 'https://leetcode.com/problems/group-anagrams/', companies: ['Amazon','Google','Meta'], pattern: 'Hashmap + Sort' },
+      { name: 'String to Integer (atoi)', url: 'https://leetcode.com/problems/string-to-integer-atoi/', companies: ['Amazon','Google'], pattern: 'Parsing' },
+      { name: 'Encode and Decode Strings', url: 'https://leetcode.com/problems/encode-and-decode-strings/', companies: ['Google'], pattern: 'Design' },
+      { name: 'Count and Say', url: 'https://leetcode.com/problems/count-and-say/', companies: ['Amazon','Google'], pattern: 'Simulation' },
+      { name: 'Decode Ways', url: 'https://leetcode.com/problems/decode-ways/', companies: ['Amazon','Meta','Microsoft'], pattern: 'DP' },
+      { name: 'Word Break', url: 'https://leetcode.com/problems/word-break/', companies: ['Amazon','Google','Meta'], pattern: 'DP + Trie' },
+      { name: 'Reverse Words in a String', url: 'https://leetcode.com/problems/reverse-words-in-a-string/', companies: ['Microsoft','Amazon'], pattern: 'Two Pointer' },
+    ],
+    hard: [
+      { name: 'Minimum Window Substring', url: 'https://leetcode.com/problems/minimum-window-substring/', companies: ['Amazon','Google','Meta'], pattern: 'Sliding Window' },
+      { name: 'Wildcard Matching', url: 'https://leetcode.com/problems/wildcard-matching/', companies: ['Google','Amazon'], pattern: 'DP' },
+      { name: 'Regular Expression Matching', url: 'https://leetcode.com/problems/regular-expression-matching/', companies: ['Google','Meta'], pattern: 'DP' },
+      { name: 'Palindrome Pairs', url: 'https://leetcode.com/problems/palindrome-pairs/', companies: ['Airbnb','Google'], pattern: 'Trie/Hashmap' },
+    ]
+  }
+},
+{
+  id: 'linked-list', icon: '🔗', color: '#1a3a1a', title: 'Linked List',
+  theory: `<b>Core Concept:</b> Dynamic data structure where each node points to the next. No random access.<br><br>
+  <b>Key Patterns:</b><br>
+  • <b>Fast-Slow Pointers (Floyd's)</b> — cycle detection, middle finding, kth from end<br>
+  • <b>Dummy node</b> — simplify edge cases at head<br>
+  • <b>Reversal</b> — iterative (prev/curr/next) or recursive`,
+  notes: [
+    '🔑 Always use dummy node for insertion/deletion problems to avoid null checks',
+    '🔑 Fast-slow: fast moves 2x, slow moves 1x. When fast reaches end, slow is at middle',
+    '🔑 To find k-th from end: move one pointer k steps, then move both until end',
+    '🔑 Reversal: prev=null, curr=head; while(curr): next=curr->next, curr->next=prev, prev=curr, curr=next',
+    '🔑 Cycle detection (Floyd): if fast == slow there\'s a cycle. To find start: reset one pointer to head, move both 1 step',
+    '🔑 Always check: head==null, single node, two nodes edge cases',
+  ],
+  complexity: [
+    ['Access by index', 'O(n)', 'O(1)'],
+    ['Insert at head', 'O(1)', 'O(1)'],
+    ['Insert at tail', 'O(n) or O(1) with tail', 'O(1)'],
+    ['Delete by value', 'O(n)', 'O(1)'],
+    ['Reverse', 'O(n)', 'O(1) iterative'],
+    ['Detect cycle', 'O(n)', 'O(1)'],
+  ],
+  cpp: `struct ListNode { int val; ListNode* next; ListNode(int x):val(x),next(nullptr){} };
+
+// Reverse linked list (iterative)
+ListNode* prev=nullptr, *curr=head;
+while(curr){ auto next=curr->next; curr->next=prev; prev=curr; curr=next; }
+return prev;
+
+// Fast-slow (find middle)
+ListNode* slow=head, *fast=head;
+while(fast && fast->next){ slow=slow->next; fast=fast->next->next; }
+// slow is at middle
+
+// Dummy node pattern
+ListNode dummy(0); dummy.next=head;
+ListNode* cur=&dummy;
+// ... manipulate
+return dummy.next;`,
+  python: `class ListNode:
+    def __init__(self, val=0, nxt=None):
+        self.val, self.next = val, nxt
+
+# Reverse linked list
+prev, curr = None, head
+while curr:
+    nxt = curr.next
+    curr.next = prev
+    prev, curr = curr, nxt
+return prev  # new head
+
+# Fast-slow pointer
+slow = fast = head
+while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next
+
+# Dummy node
+dummy = ListNode(0, head)
+cur = dummy
+return dummy.next`,
+  questions: {
+    easy: [
+      { name: 'Reverse Linked List', url: 'https://leetcode.com/problems/reverse-linked-list/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Reversal' },
+      { name: 'Merge Two Sorted Lists', url: 'https://leetcode.com/problems/merge-two-sorted-lists/', companies: ['Amazon','Google','Meta'], pattern: 'Two Pointer + Dummy' },
+      { name: 'Linked List Cycle', url: 'https://leetcode.com/problems/linked-list-cycle/', companies: ['Amazon','Google','Microsoft'], pattern: 'Fast-Slow' },
+      { name: 'Middle of Linked List', url: 'https://leetcode.com/problems/middle-of-the-linked-list/', companies: ['Amazon','Google'], pattern: 'Fast-Slow' },
+      { name: 'Remove Duplicates from Sorted List', url: 'https://leetcode.com/problems/remove-duplicates-from-sorted-list/', companies: ['Amazon','Microsoft'], pattern: 'Pointer' },
+      { name: 'Palindrome Linked List', url: 'https://leetcode.com/problems/palindrome-linked-list/', companies: ['Amazon','Meta'], pattern: 'Fast-Slow + Reverse' },
+      { name: 'Intersection of Two Linked Lists', url: 'https://leetcode.com/problems/intersection-of-two-linked-lists/', companies: ['Amazon','Meta','Microsoft'], pattern: 'Two Pointer' },
+    ],
+    medium: [
+      { name: 'Remove Nth Node From End', url: 'https://leetcode.com/problems/remove-nth-node-from-end-of-list/', companies: ['Amazon','Google','Meta'], pattern: 'Two Pointer (k gap)' },
+      { name: 'Reorder List', url: 'https://leetcode.com/problems/reorder-list/', companies: ['Amazon','Meta'], pattern: 'Fast-Slow + Reverse + Merge' },
+      { name: 'LRU Cache', url: 'https://leetcode.com/problems/lru-cache/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Design: HashMap + DLL' },
+      { name: 'Add Two Numbers', url: 'https://leetcode.com/problems/add-two-numbers/', companies: ['Amazon','Google','Meta'], pattern: 'Simulation' },
+      { name: 'Swap Nodes in Pairs', url: 'https://leetcode.com/problems/swap-nodes-in-pairs/', companies: ['Amazon','Google'], pattern: 'Pointer manipulation' },
+      { name: 'Sort List', url: 'https://leetcode.com/problems/sort-list/', companies: ['Amazon','Google'], pattern: 'Merge Sort on LL' },
+      { name: 'Copy List with Random Pointer', url: 'https://leetcode.com/problems/copy-list-with-random-pointer/', companies: ['Amazon','Meta','Microsoft'], pattern: 'HashMap' },
+      { name: 'Rotate List', url: 'https://leetcode.com/problems/rotate-list/', companies: ['Amazon'], pattern: 'Two Pointer' },
+    ],
+    hard: [
+      { name: 'Reverse Nodes in k-Group', url: 'https://leetcode.com/problems/reverse-nodes-in-k-group/', companies: ['Amazon','Meta','Google'], pattern: 'Recursive Reversal' },
+      { name: 'Merge K Sorted Lists', url: 'https://leetcode.com/problems/merge-k-sorted-lists/', companies: ['Amazon','Google','Meta'], pattern: 'Heap / Divide & Conquer' },
+      { name: 'Linked List Cycle II', url: 'https://leetcode.com/problems/linked-list-cycle-ii/', companies: ['Amazon','Google'], pattern: 'Floyd\'s Extended' },
+    ]
+  }
+},
+{
+  id: 'recursion', icon: '🔄', color: '#2a2a1a', title: 'Recursion & Backtracking',
+  theory: `<b>Core Concept:</b> A function that calls itself. Every recursion needs: base case + recursive case.<br><br>
+  <b>Backtracking = Recursion + Undo:</b> Try a choice → recurse → undo the choice (backtrack).<br><br>
+  <b>Patterns:</b> Subsets, Permutations, Combinations, N-Queens, Sudoku Solver`,
+  notes: [
+    '🔑 Always define the base case FIRST — it\'s the stopping condition',
+    '🔑 Backtracking template: choose → explore → unchoose',
+    '🔑 Think recursively: "if I had the answer for subproblem, how do I use it?"',
+    '🔑 Memoize repeated sub-calls → transforms recursion to DP',
+    '🔑 Recursion depth in C++ default ~10k; Python default 1000 (use sys.setrecursionlimit)',
+    '🔑 For subsets: at each element, either include or exclude (2^n possibilities)',
+    '🔑 For permutations: fix one, permute rest. Use swap-based to avoid extra memory',
+  ],
+  complexity: [
+    ['Subsets', 'O(n * 2^n)', 'O(n)'],
+    ['Permutations', 'O(n * n!)', 'O(n)'],
+    ['Combinations C(n,k)', 'O(k * C(n,k))', 'O(k)'],
+    ['N-Queens', 'O(n!)', 'O(n)'],
+  ],
+  cpp: `// Backtracking Template
+void backtrack(vector<int>& nums, vector<int>& curr, vector<vector<int>>& res){
+  if(base_case){ res.push_back(curr); return; }
+  for(int i=start; i<nums.size(); i++){
+    curr.push_back(nums[i]);          // choose
+    backtrack(nums, curr, res);       // explore
+    curr.pop_back();                  // unchoose
+  }
+}
+
+// Subsets
+void subsets(int i, vector<int>& nums, vector<int>& cur, vector<vector<int>>& res){
+  res.push_back(cur);
+  for(int j=i; j<nums.size(); j++){
+    cur.push_back(nums[j]);
+    subsets(j+1,nums,cur,res);
+    cur.pop_back();
+  }
+}`,
+  python: `# Backtracking Template
+def backtrack(start, path):
+    if base_case:
+        result.append(path[:])  # snapshot
+        return
+    for i in range(start, len(nums)):
+        path.append(nums[i])    # choose
+        backtrack(i+1, path)    # explore (i+1 for no-reuse, i for reuse)
+        path.pop()              # unchoose
+
+# Subsets
+def subsets(nums):
+    res = []
+    def bt(start, path):
+        res.append(path[:])
+        for i in range(start, len(nums)):
+            bt(i+1, path+[nums[i]])
+    bt(0, [])
+    return res`,
+  questions: {
+    easy: [
+      { name: 'Fibonacci Number', url: 'https://leetcode.com/problems/fibonacci-number/', companies: ['Amazon','TCS'], pattern: 'Recursion Basics' },
+      { name: 'Power of Two', url: 'https://leetcode.com/problems/power-of-two/', companies: ['Amazon'], pattern: 'Recursion' },
+      { name: 'Reverse String', url: 'https://leetcode.com/problems/reverse-string/', companies: ['Amazon'], pattern: 'Recursion' },
+      { name: 'Climbing Stairs', url: 'https://leetcode.com/problems/climbing-stairs/', companies: ['Amazon','Google','Microsoft'], pattern: 'Recursion → DP' },
+    ],
+    medium: [
+      { name: 'Subsets', url: 'https://leetcode.com/problems/subsets/', companies: ['Amazon','Google','Meta'], pattern: 'Backtracking' },
+      { name: 'Permutations', url: 'https://leetcode.com/problems/permutations/', companies: ['Amazon','Google','Meta'], pattern: 'Backtracking' },
+      { name: 'Combination Sum', url: 'https://leetcode.com/problems/combination-sum/', companies: ['Amazon','Google','Meta'], pattern: 'Backtracking' },
+      { name: 'Letter Combinations of Phone Number', url: 'https://leetcode.com/problems/letter-combinations-of-a-phone-number/', companies: ['Amazon','Google','Meta'], pattern: 'Backtracking' },
+      { name: 'Generate Parentheses', url: 'https://leetcode.com/problems/generate-parentheses/', companies: ['Amazon','Google','Meta'], pattern: 'Backtracking' },
+      { name: 'Word Search', url: 'https://leetcode.com/problems/word-search/', companies: ['Amazon','Google','Microsoft'], pattern: 'Backtracking DFS' },
+      { name: 'Subsets II (with duplicates)', url: 'https://leetcode.com/problems/subsets-ii/', companies: ['Amazon','Meta'], pattern: 'Backtracking + Sort' },
+      { name: 'Permutations II', url: 'https://leetcode.com/problems/permutations-ii/', companies: ['Amazon'], pattern: 'Backtracking + Skip dups' },
+    ],
+    hard: [
+      { name: 'N-Queens', url: 'https://leetcode.com/problems/n-queens/', companies: ['Amazon','Google'], pattern: 'Backtracking' },
+      { name: 'Sudoku Solver', url: 'https://leetcode.com/problems/sudoku-solver/', companies: ['Amazon','Google','Microsoft'], pattern: 'Backtracking' },
+      { name: 'Expression Add Operators', url: 'https://leetcode.com/problems/expression-add-operators/', companies: ['Google','Meta'], pattern: 'Backtracking' },
+      { name: 'Palindrome Partitioning', url: 'https://leetcode.com/problems/palindrome-partitioning/', companies: ['Amazon','Google'], pattern: 'Backtracking + DP' },
+    ]
+  }
+},
+{
+  id: 'bit', icon: '⚡', color: '#1a1a3a', title: 'Bit Manipulation',
+  theory: `<b>Core Concept:</b> Operations directly on binary representation. Extremely fast — single CPU instruction.<br><br>
+  <b>Key Operations:</b> AND(&), OR(|), XOR(^), NOT(~), Left Shift(<<), Right Shift(>>)<br><br>
+  <b>Common tricks:</b> XOR for finding unique, masking, counting bits, power of 2 checks`,
+  notes: [
+    '🔑 XOR: a^a=0, a^0=a — use to cancel duplicates and find unique elements',
+    '🔑 Check i-th bit: (n >> i) & 1',
+    '🔑 Set i-th bit: n | (1 << i)',
+    '🔑 Clear i-th bit: n & ~(1 << i)',
+    '🔑 Toggle i-th bit: n ^ (1 << i)',
+    '🔑 Power of 2: n > 0 && (n & (n-1)) == 0',
+    '🔑 n & (n-1) removes the lowest set bit — count set bits loop',
+    '🔑 Brian Kernighan: count bits in O(set_bits) not O(32)',
+  ],
+  complexity: [
+    ['Any bit op', 'O(1)', 'O(1)'],
+    ['Count set bits (naive)', 'O(32)', 'O(1)'],
+    ['Count set bits (Brian)', 'O(set bits)', 'O(1)'],
+    ['Subset enumeration', 'O(2^n)', 'O(1)'],
+  ],
+  cpp: `// Common tricks
+int check_bit = (n >> i) & 1;         // check i-th bit
+int set_bit   = n | (1 << i);         // set i-th bit
+int clear_bit = n & ~(1 << i);        // clear i-th bit
+bool pow2     = n > 0 && !(n&(n-1));  // power of 2?
+
+// Count set bits (Brian Kernighan)
+int count = 0;
+while(n){ n &= (n-1); count++; }
+
+// Find unique element in array (all others appear twice)
+int unique = 0;
+for(int x : nums) unique ^= x;
+
+// Subset enumeration (bitmask)
+for(int mask=0; mask<(1<<n); mask++){
+  for(int i=0;i<n;i++) if(mask>>i & 1) /* include i */;
+}`,
+  python: `# Common tricks
+check = (n >> i) & 1       # check i-th bit
+n |= (1 << i)              # set i-th bit
+n &= ~(1 << i)             # clear i-th bit
+is_pow2 = n > 0 and not (n & (n-1))
+
+# Count set bits
+bin(n).count('1')          # Python built-in
+n.bit_count()              # Python 3.10+
+
+# XOR trick — find unique
+from functools import reduce
+unique = reduce(lambda a,b: a^b, nums)
+
+# Enumerate all subsets
+for mask in range(1<<n):
+    subset = [arr[i] for i in range(n) if mask>>i & 1]`,
+  questions: {
+    easy: [
+      { name: 'Single Number', url: 'https://leetcode.com/problems/single-number/', companies: ['Amazon','Google'], pattern: 'XOR' },
+      { name: 'Number of 1 Bits', url: 'https://leetcode.com/problems/number-of-1-bits/', companies: ['Apple','Amazon'], pattern: 'Brian Kernighan' },
+      { name: 'Reverse Bits', url: 'https://leetcode.com/problems/reverse-bits/', companies: ['Apple','Amazon'], pattern: 'Bit manipulation' },
+      { name: 'Power of Two', url: 'https://leetcode.com/problems/power-of-two/', companies: ['Amazon'], pattern: 'n & (n-1)' },
+      { name: 'Missing Number', url: 'https://leetcode.com/problems/missing-number/', companies: ['Amazon','Google','Microsoft'], pattern: 'XOR / Math' },
+      { name: 'Counting Bits', url: 'https://leetcode.com/problems/counting-bits/', companies: ['Amazon','Google'], pattern: 'DP + Bit' },
+    ],
+    medium: [
+      { name: 'Single Number II', url: 'https://leetcode.com/problems/single-number-ii/', companies: ['Amazon','Google'], pattern: 'Bit counting' },
+      { name: 'Single Number III', url: 'https://leetcode.com/problems/single-number-iii/', companies: ['Amazon'], pattern: 'XOR + split' },
+      { name: 'Sum of Two Integers (no + or -)', url: 'https://leetcode.com/problems/sum-of-two-integers/', companies: ['Meta','Amazon'], pattern: 'Carry XOR' },
+      { name: 'Subsets (bitmask)', url: 'https://leetcode.com/problems/subsets/', companies: ['Amazon','Google'], pattern: 'Bitmask enumeration' },
+      { name: 'Bitwise AND of Numbers Range', url: 'https://leetcode.com/problems/bitwise-and-of-numbers-range/', companies: ['Google'], pattern: 'Common prefix' },
+    ],
+    hard: [
+      { name: 'Maximum XOR of Two Numbers', url: 'https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/', companies: ['Google'], pattern: 'Trie + XOR' },
+      { name: 'Minimum XOR Sum of Two Arrays', url: 'https://leetcode.com/problems/minimum-xor-sum-of-two-arrays/', companies: ['Amazon'], pattern: 'Bitmask DP' },
+    ]
+  }
+},
+{
+  id: 'stacks', icon: '📚', color: '#3a1a1a', title: 'Stacks',
+  theory: `<b>Core Concept:</b> LIFO (Last In First Out). Push/Pop in O(1).<br><br>
+  <b>Key Patterns:</b><br>
+  • Monotonic Stack — find Next Greater Element, span, histograms<br>
+  • Expression evaluation / balanced brackets<br>
+  • Undo operations, DFS iterative`,
+  notes: [
+    '🔑 Monotonic Increasing Stack: pop when arr[i] < stack.top() — good for "next smaller"',
+    '🔑 Monotonic Decreasing Stack: pop when arr[i] > stack.top() — good for "next greater"',
+    '🔑 For balanced brackets: push open, pop and check when close',
+    '🔑 Largest Rectangle in Histogram: monotonic stack classic — memorize it',
+    '🔑 Stack = explicit recursion. Any DFS can be done with stack iteratively',
+    '🔑 Min Stack: maintain a parallel min-stack or store (val, current_min) pairs',
+  ],
+  complexity: [
+    ['Push', 'O(1)', 'O(1)'],
+    ['Pop', 'O(1)', 'O(1)'],
+    ['Peek/Top', 'O(1)', 'O(1)'],
+    ['Search', 'O(n)', 'O(n)'],
+    ['Monotonic stack build', 'O(n)', 'O(n)'],
+  ],
+  cpp: `// Monotonic Stack (Next Greater Element)
+vector<int> nge(n, -1);
+stack<int> st;  // stores indices
+for(int i=0;i<n;i++){
+  while(!st.empty() && arr[st.top()]<arr[i]){
+    nge[st.top()] = arr[i];
+    st.pop();
+  }
+  st.push(i);
+}
+
+// Valid Parentheses
+stack<char> st;
+for(char c : s){
+  if(c=='(' || c=='{' || c=='[') st.push(c);
+  else{
+    if(st.empty()) return false;
+    char top=st.top(); st.pop();
+    if(c==')' && top!='(') return false;
+    // ... other pairs
+  }
+}
+return st.empty();`,
+  python: `# Monotonic Stack
+stack = []  # stores indices
+nge = [-1]*n
+for i in range(n):
+    while stack and arr[stack[-1]] < arr[i]:
+        nge[stack.pop()] = arr[i]
+    stack.append(i)
+
+# Valid Parentheses
+stack = []
+pairs = {')':'(', '}':'{', ']':'['}
+for c in s:
+    if c in '({[': stack.append(c)
+    elif not stack or stack[-1] != pairs[c]:
+        return False
+    else: stack.pop()
+return not stack`,
+  questions: {
+    easy: [
+      { name: 'Valid Parentheses', url: 'https://leetcode.com/problems/valid-parentheses/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Stack' },
+      { name: 'Min Stack', url: 'https://leetcode.com/problems/min-stack/', companies: ['Amazon','Google','Meta'], pattern: 'Design' },
+      { name: 'Baseball Game', url: 'https://leetcode.com/problems/baseball-game/', companies: ['Google'], pattern: 'Stack simulation' },
+      { name: 'Backspace String Compare', url: 'https://leetcode.com/problems/backspace-string-compare/', companies: ['Google','Amazon'], pattern: 'Stack' },
+    ],
+    medium: [
+      { name: 'Daily Temperatures', url: 'https://leetcode.com/problems/daily-temperatures/', companies: ['Amazon','Google'], pattern: 'Monotonic Stack' },
+      { name: 'Next Greater Element I', url: 'https://leetcode.com/problems/next-greater-element-i/', companies: ['Amazon','Google'], pattern: 'Monotonic Stack' },
+      { name: 'Asteroid Collision', url: 'https://leetcode.com/problems/asteroid-collision/', companies: ['Amazon','Google'], pattern: 'Stack simulation' },
+      { name: 'Decode String', url: 'https://leetcode.com/problems/decode-string/', companies: ['Amazon','Google'], pattern: 'Stack' },
+      { name: 'Evaluate Reverse Polish Notation', url: 'https://leetcode.com/problems/evaluate-reverse-polish-notation/', companies: ['Amazon','LinkedIn'], pattern: 'Stack' },
+      { name: 'Remove K Digits', url: 'https://leetcode.com/problems/remove-k-digits/', companies: ['Google'], pattern: 'Monotonic Stack' },
+      { name: 'Car Fleet', url: 'https://leetcode.com/problems/car-fleet/', companies: ['Amazon'], pattern: 'Monotonic Stack' },
+    ],
+    hard: [
+      { name: 'Largest Rectangle in Histogram', url: 'https://leetcode.com/problems/largest-rectangle-in-histogram/', companies: ['Amazon','Google','Meta'], pattern: 'Monotonic Stack' },
+      { name: 'Trapping Rain Water', url: 'https://leetcode.com/problems/trapping-rain-water/', companies: ['Amazon','Google'], pattern: 'Monotonic Stack' },
+      { name: 'Basic Calculator', url: 'https://leetcode.com/problems/basic-calculator/', companies: ['Google','Meta'], pattern: 'Stack' },
+      { name: 'Maximum Frequency Stack', url: 'https://leetcode.com/problems/maximum-frequency-stack/', companies: ['Amazon','Google'], pattern: 'Design' },
+    ]
+  }
+},
+{
+  id: 'queues', icon: '🚦', color: '#1a3a2a', title: 'Queues & Deque',
+  theory: `<b>Core Concept:</b> FIFO (First In First Out). Use for BFS, sliding window max, scheduling.<br><br>
+  <b>Deque (Double-Ended Queue):</b> Push/pop from both ends O(1). Used for sliding window maximum.`,
+  notes: [
+    '🔑 BFS always uses a Queue — level-order traversal, shortest path in unweighted graphs',
+    '🔑 Deque for sliding window MAX/MIN: maintain monotonic deque',
+    '🔑 Circular Queue: useful for fixed-size buffers, design questions',
+    '🔑 Priority Queue = Heap (different from regular queue)',
+    '🔑 In C++: queue<>, deque<>, priority_queue<>. In Python: collections.deque, heapq',
+  ],
+  complexity: [
+    ['Enqueue/Push', 'O(1)', 'O(1)'],
+    ['Dequeue/Pop', 'O(1)', 'O(1)'],
+    ['Front/Rear peek', 'O(1)', 'O(1)'],
+    ['Sliding max (deque)', 'O(n) total', 'O(k)'],
+  ],
+  cpp: `#include <queue>
+#include <deque>
+
+// BFS template
+queue<int> q;
+q.push(start);
+while(!q.empty()){
+  int node = q.front(); q.pop();
+  for(auto next : adj[node]) q.push(next);
+}
+
+// Sliding window maximum (deque)
+deque<int> dq; // stores indices, decreasing values
+for(int i=0;i<n;i++){
+  while(!dq.empty() && arr[dq.back()]<=arr[i]) dq.pop_back();
+  dq.push_back(i);
+  if(dq.front()<=i-k) dq.pop_front();
+  if(i>=k-1) result.push_back(arr[dq.front()]);
+}`,
+  python: `from collections import deque
+
+# BFS template
+q = deque([start])
+visited = {start}
+while q:
+    node = q.popleft()
+    for nxt in adj[node]:
+        if nxt not in visited:
+            visited.add(nxt)
+            q.append(nxt)
+
+# Sliding window maximum
+dq = deque()  # stores indices
+for i, val in enumerate(arr):
+    while dq and arr[dq[-1]] <= val:
+        dq.pop()
+    dq.append(i)
+    if dq[0] <= i - k: dq.popleft()
+    if i >= k-1: result.append(arr[dq[0]])`,
+  questions: {
+    easy: [
+      { name: 'Implement Queue using Stacks', url: 'https://leetcode.com/problems/implement-queue-using-stacks/', companies: ['Amazon','Google'], pattern: 'Design' },
+      { name: 'Implement Stack using Queues', url: 'https://leetcode.com/problems/implement-stack-using-queues/', companies: ['Amazon'], pattern: 'Design' },
+      { name: 'Number of Recent Calls', url: 'https://leetcode.com/problems/number-of-recent-calls/', companies: ['Google'], pattern: 'Queue' },
+    ],
+    medium: [
+      { name: 'Sliding Window Maximum', url: 'https://leetcode.com/problems/sliding-window-maximum/', companies: ['Amazon','Google','Meta'], pattern: 'Monotonic Deque' },
+      { name: 'Design Circular Queue', url: 'https://leetcode.com/problems/design-circular-queue/', companies: ['Amazon','Google'], pattern: 'Design' },
+      { name: 'Open the Lock', url: 'https://leetcode.com/problems/open-the-lock/', companies: ['Google'], pattern: 'BFS' },
+      { name: 'Rotting Oranges', url: 'https://leetcode.com/problems/rotting-oranges/', companies: ['Amazon','Google'], pattern: 'Multi-source BFS' },
+      { name: 'Perfect Squares', url: 'https://leetcode.com/problems/perfect-squares/', companies: ['Google'], pattern: 'BFS / DP' },
+    ],
+    hard: [
+      { name: 'Sliding Window Minimum (variant)', url: 'https://leetcode.com/problems/sliding-window-maximum/', companies: ['Amazon'], pattern: 'Deque' },
+      { name: 'Jump Game VI', url: 'https://leetcode.com/problems/jump-game-vi/', companies: ['Amazon'], pattern: 'Deque DP' },
+    ]
+  }
+},
+{
+  id: 'sliding-window', icon: '🪟', color: '#1a2a3a', title: 'Sliding Window',
+  theory: `<b>Core Concept:</b> Maintain a window [l, r] over an array/string, expanding r and shrinking l to satisfy conditions. Reduces O(n^2) brute force to O(n).<br><br>
+  <b>Types:</b><br>
+  • <b>Fixed size window:</b> window always has size k<br>
+  • <b>Variable size window:</b> expand until invalid, shrink from left`,
+  notes: [
+    '🔑 Fixed window: init with first k elements, slide by adding right and removing left',
+    '🔑 Variable window: r iterates 0..n-1. Shrink l while window is invalid',
+    '🔑 Track what you need: count, sum, frequency map, set',
+    '🔑 When window has "at most k distinct" problems, consider: exact_k = atMost(k) - atMost(k-1)',
+    '🔑 Frequency map shrink condition: decrement count, if count==0 remove key, check distinct count',
+  ],
+  complexity: [
+    ['Fixed window', 'O(n)', 'O(k) or O(1)'],
+    ['Variable window', 'O(n)', 'O(n) worst case'],
+    ['String window + map', 'O(n)', 'O(k)'],
+  ],
+  cpp: `// Variable window template
+int l=0, maxLen=0;
+unordered_map<char,int> freq;
+for(int r=0;r<s.size();r++){
+  freq[s[r]]++;
+  while(window_invalid){ // e.g., freq.size()>k
+    freq[s[l]]--;
+    if(freq[s[l]]==0) freq.erase(s[l]);
+    l++;
+  }
+  maxLen = max(maxLen, r-l+1);
+}
+
+// Fixed window (sum of size k)
+int sum=0;
+for(int i=0;i<k;i++) sum+=arr[i];
+int maxSum=sum;
+for(int i=k;i<n;i++){
+  sum += arr[i]-arr[i-k];
+  maxSum = max(maxSum,sum);
+}`,
+  python: `# Variable window
+from collections import defaultdict
+l = 0
+freq = defaultdict(int)
+max_len = 0
+for r in range(len(s)):
+    freq[s[r]] += 1
+    while len(freq) > k:  # window invalid
+        freq[s[l]] -= 1
+        if freq[s[l]] == 0: del freq[s[l]]
+        l += 1
+    max_len = max(max_len, r-l+1)
+
+# Fixed window
+window_sum = sum(arr[:k])
+max_sum = window_sum
+for i in range(k, len(arr)):
+    window_sum += arr[i] - arr[i-k]
+    max_sum = max(max_sum, window_sum)`,
+  questions: {
+    easy: [
+      { name: 'Maximum Average Subarray I', url: 'https://leetcode.com/problems/maximum-average-subarray-i/', companies: ['Google'], pattern: 'Fixed Window' },
+      { name: 'Substrings of Size Three with Distinct Chars', url: 'https://leetcode.com/problems/substrings-of-size-three-with-distinct-characters/', companies: ['Amazon'], pattern: 'Fixed Window' },
+    ],
+    medium: [
+      { name: 'Longest Substring Without Repeating Characters', url: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Variable Window' },
+      { name: 'Longest Substring with At Most K Distinct', url: 'https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/', companies: ['Amazon','Google'], pattern: 'Variable Window' },
+      { name: 'Permutation in String', url: 'https://leetcode.com/problems/permutation-in-string/', companies: ['Amazon','Microsoft'], pattern: 'Fixed Window + freq' },
+      { name: 'Find All Anagrams in String', url: 'https://leetcode.com/problems/find-all-anagrams-in-a-string/', companies: ['Amazon','Google'], pattern: 'Fixed Window + freq' },
+      { name: 'Max Consecutive Ones III', url: 'https://leetcode.com/problems/max-consecutive-ones-iii/', companies: ['Google','Amazon'], pattern: 'Variable Window' },
+      { name: 'Fruit Into Baskets', url: 'https://leetcode.com/problems/fruit-into-baskets/', companies: ['Amazon'], pattern: 'At Most 2 distinct' },
+      { name: 'Longest Repeating Character Replacement', url: 'https://leetcode.com/problems/longest-repeating-character-replacement/', companies: ['Amazon','Google'], pattern: 'Variable Window + max freq' },
+    ],
+    hard: [
+      { name: 'Minimum Window Substring', url: 'https://leetcode.com/problems/minimum-window-substring/', companies: ['Amazon','Google','Meta'], pattern: 'Variable Window + freq' },
+      { name: 'Sliding Window Maximum', url: 'https://leetcode.com/problems/sliding-window-maximum/', companies: ['Amazon','Google'], pattern: 'Fixed Window + Deque' },
+      { name: 'Substring with Concatenation of All Words', url: 'https://leetcode.com/problems/substring-with-concatenation-of-all-words/', companies: ['Google','Amazon'], pattern: 'Sliding Window' },
+    ]
+  }
+},
+{
+  id: 'two-pointers', icon: '👉👈', color: '#2a3a1a', title: 'Two Pointers',
+  theory: `<b>Core Concept:</b> Use two indices/pointers to scan array from different positions simultaneously. Eliminates nested loops.<br><br>
+  <b>Types:</b><br>
+  • <b>Opposite direction:</b> l=0, r=n-1 (sorted array problems)<br>
+  • <b>Same direction:</b> both move forward (fast-slow, partitioning)<br>
+  • <b>Two arrays:</b> merge sorted, intersection`,
+  notes: [
+    '🔑 Sort first, then two pointers — this is the most common pattern',
+    '🔑 In-place removal: slow pointer tracks write position, fast pointer reads',
+    '🔑 For 3Sum: fix one, two-pointer for remaining two (O(n^2) total)',
+    '🔑 Palindrome: l=0, r=n-1, move inward comparing',
+    '🔑 When to use: "find pair with sum X", "remove duplicates", "merge sorted"',
+  ],
+  complexity: [
+    ['Two pointer traversal', 'O(n)', 'O(1)'],
+    ['Two pointer + sort', 'O(n log n)', 'O(1) or O(n)'],
+    ['3Sum (fix + TP)', 'O(n^2)', 'O(1)'],
+  ],
+  cpp: `// Two pointer: find pair with sum = target
+sort(arr.begin(), arr.end());
+int lo=0, hi=n-1;
+while(lo<hi){
+  int s=arr[lo]+arr[hi];
+  if(s==target){ /* found */ break; }
+  else if(s<target) lo++;
+  else hi--;
+}
+
+// Remove duplicates in-place
+int slow=0;
+for(int fast=1; fast<n; fast++){
+  if(arr[fast]!=arr[slow]) arr[++slow]=arr[fast];
+}
+// array[0..slow] has unique elements`,
+  python: `# Two pointer pair sum
+arr.sort()
+lo, hi = 0, len(arr)-1
+while lo < hi:
+    s = arr[lo]+arr[hi]
+    if s == target: break
+    elif s < target: lo += 1
+    else: hi -= 1
+
+# Remove duplicates in-place
+slow = 0
+for fast in range(1, len(arr)):
+    if arr[fast] != arr[slow]:
+        slow += 1
+        arr[slow] = arr[fast]
+return slow + 1`,
+  questions: {
+    easy: [
+      { name: 'Valid Palindrome', url: 'https://leetcode.com/problems/valid-palindrome/', companies: ['Meta','Microsoft'], pattern: 'Opposite direction' },
+      { name: 'Remove Duplicates from Sorted Array', url: 'https://leetcode.com/problems/remove-duplicates-from-sorted-array/', companies: ['Amazon','Google'], pattern: 'Same direction' },
+      { name: 'Reverse String', url: 'https://leetcode.com/problems/reverse-string/', companies: ['Amazon'], pattern: 'Opposite direction' },
+      { name: 'Two Sum II (sorted)', url: 'https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/', companies: ['Amazon'], pattern: 'Opposite direction' },
+      { name: 'Move Zeroes', url: 'https://leetcode.com/problems/move-zeroes/', companies: ['Google','Meta'], pattern: 'Same direction' },
+    ],
+    medium: [
+      { name: '3Sum', url: 'https://leetcode.com/problems/3sum/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Fix + Two Pointer' },
+      { name: 'Container With Most Water', url: 'https://leetcode.com/problems/container-with-most-water/', companies: ['Amazon','Google'], pattern: 'Opposite direction' },
+      { name: '4Sum', url: 'https://leetcode.com/problems/4sum/', companies: ['Amazon','Google'], pattern: 'Fix two + Two Pointer' },
+      { name: 'Sort Colors', url: 'https://leetcode.com/problems/sort-colors/', companies: ['Microsoft'], pattern: '3-way partition (DNF)' },
+      { name: 'Boats to Save People', url: 'https://leetcode.com/problems/boats-to-save-people/', companies: ['Amazon'], pattern: 'Sort + Two Pointer' },
+      { name: 'Longest Mountain in Array', url: 'https://leetcode.com/problems/longest-mountain-in-array/', companies: ['Google'], pattern: 'Two Pointer' },
+    ],
+    hard: [
+      { name: 'Trapping Rain Water', url: 'https://leetcode.com/problems/trapping-rain-water/', companies: ['Amazon','Google','Meta'], pattern: 'Two Pointer' },
+      { name: 'Minimum Window Substring', url: 'https://leetcode.com/problems/minimum-window-substring/', companies: ['Amazon','Google','Meta'], pattern: 'Two Pointer (Sliding Window)' },
+    ]
+  }
+},
+{
+  id: 'sw-tp', icon: '🔀', color: '#3a2a1a', title: 'SW + TP Combined',
+  theory: `<b>Core Concept:</b> Problems that require BOTH sliding window AND two pointer techniques together, or where the solution involves elements from both.<br><br>
+  <b>When to recognize:</b> Subarray problems with two constraints, partitioning windows, or monotonic data with count constraints.`,
+  notes: [
+    '🔑 Many "hard" problems combine both — identify which part is SW and which is TP',
+    '🔑 atMost(k) trick: exact_k_distinct = atMost(k) - atMost(k-1)',
+    '🔑 Partition + window: first fix partition boundary, then slide window inside',
+    '🔑 When window validity depends on two conditions (e.g., sum AND count), use both',
+  ],
+  complexity: [['Combined approach', 'O(n)', 'O(n) or O(1)']],
+  cpp: `// Exactly K distinct (SW + atMost trick)
+int atMost(vector<int>& arr, int k){
+  int l=0, res=0;
+  unordered_map<int,int> freq;
+  for(int r=0;r<arr.size();r++){
+    freq[arr[r]]++;
+    while(freq.size()>k){ freq[arr[l]]--; if(!freq[arr[l]]) freq.erase(arr[l]); l++; }
+    res += r-l+1;
+  }
+  return res;
+}
+int exactlyK = atMost(arr,k) - atMost(arr,k-1);`,
+  python: `def at_most_k(arr, k):
+    from collections import defaultdict
+    l, res = 0, 0
+    freq = defaultdict(int)
+    for r, v in enumerate(arr):
+        freq[v] += 1
+        while len(freq) > k:
+            freq[arr[l]] -= 1
+            if freq[arr[l]] == 0: del freq[arr[l]]
+            l += 1
+        res += r - l + 1
+    return res
+
+# Exactly K distinct subarrays
+exactly_k = at_most_k(arr, k) - at_most_k(arr, k-1)`,
+  questions: {
+    easy: [],
+    medium: [
+      { name: 'Subarrays with K Different Integers', url: 'https://leetcode.com/problems/subarrays-with-k-different-integers/', companies: ['Google','Amazon'], pattern: 'AtMost trick' },
+      { name: 'Count Number of Nice Subarrays', url: 'https://leetcode.com/problems/count-number-of-nice-subarrays/', companies: ['Amazon'], pattern: 'AtMost trick' },
+      { name: 'Binary Subarrays With Sum', url: 'https://leetcode.com/problems/binary-subarrays-with-sum/', companies: ['Google'], pattern: 'AtMost trick' },
+      { name: 'Replace the Substring for Balanced String', url: 'https://leetcode.com/problems/replace-the-substring-for-balanced-string/', companies: ['Google'], pattern: 'SW + TP' },
+      { name: 'Max Consecutive Ones III', url: 'https://leetcode.com/problems/max-consecutive-ones-iii/', companies: ['Google','Amazon'], pattern: 'SW + flip budget' },
+      { name: 'Minimum Size Subarray Sum', url: 'https://leetcode.com/problems/minimum-size-subarray-sum/', companies: ['Amazon','Google'], pattern: 'Variable Window' },
+    ],
+    hard: [
+      { name: 'Minimum Window Substring', url: 'https://leetcode.com/problems/minimum-window-substring/', companies: ['Amazon','Google','Meta'], pattern: 'SW + freq TP' },
+      { name: 'Sliding Window Maximum', url: 'https://leetcode.com/problems/sliding-window-maximum/', companies: ['Amazon','Google'], pattern: 'Fixed SW + Deque' },
+    ]
+  }
+},
+{
+  id: 'heaps', icon: '🏔️', color: '#1a2a2a', title: 'Heaps (Priority Queues)',
+  theory: `<b>Core Concept:</b> Complete binary tree where parent ≤ children (min-heap) or parent ≥ children (max-heap). O(log n) insert/delete, O(1) peek.<br><br>
+  <b>Key use cases:</b> Kth largest/smallest, top K elements, merge K sorted lists, median stream, Dijkstra's shortest path`,
+  notes: [
+    '🔑 C++ default priority_queue is MAX heap. For min heap: priority_queue<int,vector<int>,greater<int>>',
+    '🔑 Python heapq is MIN heap. For max heap: push -val, pop and negate',
+    '🔑 Kth largest: use MIN heap of size k. If new element > min, replace.',
+    '🔑 Kth smallest: use MAX heap of size k. If new element < max, replace.',
+    '🔑 Heap of pairs: in Python (val, idx, ...), in C++ pair<int,int>',
+    '🔑 "Find top K frequent" pattern: heap on (frequency, element)',
+  ],
+  complexity: [
+    ['Insert (push)', 'O(log n)', 'O(n)'],
+    ['Delete min/max', 'O(log n)', 'O(n)'],
+    ['Peek min/max', 'O(1)', 'O(n)'],
+    ['Build heap', 'O(n)', 'O(n)'],
+    ['Heap sort', 'O(n log n)', 'O(1)'],
+  ],
+  cpp: `#include <queue>
+
+// Min heap
+priority_queue<int,vector<int>,greater<int>> minH;
+// Max heap (default)
+priority_queue<int> maxH;
+
+// Kth Largest using min heap of size k
+priority_queue<int,vector<int>,greater<int>> pq;
+for(int x : nums){
+  pq.push(x);
+  if(pq.size()>k) pq.pop();
+}
+return pq.top(); // kth largest
+
+// Merge K sorted arrays
+priority_queue<tuple<int,int,int>,vector<tuple<int,int,int>>,greater<>> pq;
+for(int i=0;i<k;i++) if(!arrs[i].empty()) pq.push({arrs[i][0],i,0});
+while(!pq.empty()){
+  auto [val,i,j]=pq.top(); pq.pop();
+  result.push_back(val);
+  if(j+1<arrs[i].size()) pq.push({arrs[i][j+1],i,j+1});
+}`,
+  python: `import heapq
+
+# Min heap
+min_h = []
+heapq.heappush(min_h, val)
+smallest = heapq.heappop(min_h)
+
+# Max heap (negate values)
+max_h = []
+heapq.heappush(max_h, -val)
+largest = -heapq.heappop(max_h)
+
+# Kth largest (min-heap of size k)
+heap = []
+for x in nums:
+    heapq.heappush(heap, x)
+    if len(heap) > k:
+        heapq.heappop(heap)
+return heap[0]  # kth largest
+
+# Build heap from list (heapify O(n))
+heapq.heapify(arr)`,
+  questions: {
+    easy: [
+      { name: 'Kth Largest Element in Stream', url: 'https://leetcode.com/problems/kth-largest-element-in-a-stream/', companies: ['Amazon','Google'], pattern: 'Min Heap size k' },
+      { name: 'Last Stone Weight', url: 'https://leetcode.com/problems/last-stone-weight/', companies: ['Amazon'], pattern: 'Max Heap' },
+    ],
+    medium: [
+      { name: 'Kth Largest Element in Array', url: 'https://leetcode.com/problems/kth-largest-element-in-an-array/', companies: ['Amazon','Google','Meta'], pattern: 'Heap / QuickSelect' },
+      { name: 'Top K Frequent Elements', url: 'https://leetcode.com/problems/top-k-frequent-elements/', companies: ['Amazon','Google','Meta'], pattern: 'Heap + freq' },
+      { name: 'Top K Frequent Words', url: 'https://leetcode.com/problems/top-k-frequent-words/', companies: ['Amazon','Google'], pattern: 'Heap + freq' },
+      { name: 'K Closest Points to Origin', url: 'https://leetcode.com/problems/k-closest-points-to-origin/', companies: ['Amazon','Google','Meta'], pattern: 'Max Heap size k' },
+      { name: 'Task Scheduler', url: 'https://leetcode.com/problems/task-scheduler/', companies: ['Amazon','Google'], pattern: 'Greedy + Heap' },
+      { name: 'Find Median from Data Stream', url: 'https://leetcode.com/problems/find-median-from-data-stream/', companies: ['Amazon','Google','Meta'], pattern: 'Two Heaps' },
+      { name: 'Reorganize String', url: 'https://leetcode.com/problems/reorganize-string/', companies: ['Google','Amazon'], pattern: 'Max Heap greedy' },
+    ],
+    hard: [
+      { name: 'Merge K Sorted Lists', url: 'https://leetcode.com/problems/merge-k-sorted-lists/', companies: ['Amazon','Google','Meta'], pattern: 'Min Heap' },
+      { name: 'Sliding Window Median', url: 'https://leetcode.com/problems/sliding-window-median/', companies: ['Google'], pattern: 'Two Heaps' },
+      { name: 'IPO (Maximize Capital)', url: 'https://leetcode.com/problems/ipo/', companies: ['Amazon'], pattern: 'Two Heaps greedy' },
+      { name: 'Trapping Rain Water II', url: 'https://leetcode.com/problems/trapping-rain-water-ii/', companies: ['Google'], pattern: 'BFS + Min Heap' },
+    ]
+  }
+},
+{
+  id: 'greedy', icon: '💰', color: '#2a1a1a', title: 'Greedy Algorithms',
+  theory: `<b>Core Concept:</b> Make locally optimal choice at each step, hoping it leads to globally optimal solution. Works when greedy choice property + optimal substructure hold.<br><br>
+  <b>Proof strategy:</b> Exchange argument — assume an optimal solution that doesn't follow your greedy choice and show you can swap to match it without getting worse.`,
+  notes: [
+    '🔑 Sort first — most greedy problems start with sorting by some key',
+    '🔑 Prove greedy is correct before coding! (exchange argument)',
+    '🔑 Interval problems: sort by end time for "max non-overlapping intervals"',
+    '🔑 Sort by start time for "merge intervals", "meeting rooms"',
+    '🔑 Greedy vs DP: if subproblems are independent → greedy. If they overlap → DP.',
+    '🔑 Fractional Knapsack = Greedy (sort by val/weight). 0/1 Knapsack = DP.',
+  ],
+  complexity: [
+    ['Activity selection', 'O(n log n)', 'O(1)'],
+    ['Interval scheduling', 'O(n log n)', 'O(n)'],
+    ['Huffman coding', 'O(n log n)', 'O(n)'],
+  ],
+  cpp: `// Interval scheduling (max non-overlapping)
+sort(intervals.begin(), intervals.end(), [](auto& a, auto& b){ return a[1]<b[1]; });
+int count=1, end=intervals[0][1];
+for(int i=1;i<intervals.size();i++){
+  if(intervals[i][0]>=end){ count++; end=intervals[i][1]; }
+}
+
+// Jump Game (greedy reach)
+int maxReach=0;
+for(int i=0;i<n;i++){
+  if(i>maxReach) return false;
+  maxReach = max(maxReach, i+nums[i]);
+}
+return true;`,
+  python: `# Interval scheduling
+intervals.sort(key=lambda x: x[1])  # sort by end
+count, end = 1, intervals[0][1]
+for start, e in intervals[1:]:
+    if start >= end:
+        count += 1
+        end = e
+
+# Minimum platforms / meeting rooms
+starts = sorted(s for s,e in intervals)
+ends   = sorted(e for s,e in intervals)
+i=j=rooms=max_rooms=0
+while i < len(starts):
+    if starts[i] < ends[j]: rooms+=1; i+=1
+    else: rooms-=1; j+=1
+    max_rooms = max(max_rooms, rooms)`,
+  questions: {
+    easy: [
+      { name: 'Assign Cookies', url: 'https://leetcode.com/problems/assign-cookies/', companies: ['Amazon'], pattern: 'Greedy' },
+      { name: 'Lemonade Change', url: 'https://leetcode.com/problems/lemonade-change/', companies: ['Amazon'], pattern: 'Greedy simulation' },
+      { name: 'Best Time to Buy Stock (I)', url: 'https://leetcode.com/problems/best-time-to-buy-and-sell-stock/', companies: ['Amazon','Google'], pattern: 'Greedy' },
+    ],
+    medium: [
+      { name: 'Jump Game', url: 'https://leetcode.com/problems/jump-game/', companies: ['Amazon','Google','Microsoft'], pattern: 'Greedy reach' },
+      { name: 'Jump Game II', url: 'https://leetcode.com/problems/jump-game-ii/', companies: ['Amazon','Google'], pattern: 'Greedy BFS' },
+      { name: 'Gas Station', url: 'https://leetcode.com/problems/gas-station/', companies: ['Amazon','Google'], pattern: 'Greedy circular' },
+      { name: 'Non-overlapping Intervals', url: 'https://leetcode.com/problems/non-overlapping-intervals/', companies: ['Amazon','Google'], pattern: 'Sort by end' },
+      { name: 'Partition Labels', url: 'https://leetcode.com/problems/partition-labels/', companies: ['Amazon','Google'], pattern: 'Greedy last occurrence' },
+      { name: 'Meeting Rooms II', url: 'https://leetcode.com/problems/meeting-rooms-ii/', companies: ['Amazon','Google','Meta'], pattern: 'Sort + Heap/Sweep' },
+      { name: 'Two City Scheduling', url: 'https://leetcode.com/problems/two-city-scheduling/', companies: ['Amazon'], pattern: 'Greedy sort' },
+      { name: 'Minimum Number of Arrows', url: 'https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/', companies: ['Amazon'], pattern: 'Sort by end' },
+    ],
+    hard: [
+      { name: 'Candy', url: 'https://leetcode.com/problems/candy/', companies: ['Amazon','Google'], pattern: 'Two-pass greedy' },
+      { name: 'Jump Game VI', url: 'https://leetcode.com/problems/jump-game-vi/', companies: ['Amazon'], pattern: 'Greedy + Deque DP' },
+      { name: 'Minimum Cost to Hire K Workers', url: 'https://leetcode.com/problems/minimum-cost-to-hire-k-workers/', companies: ['Google'], pattern: 'Greedy + Heap' },
+    ]
+  }
+},
+{
+  id: 'binary-trees', icon: '🌳', color: '#1a3a1a', title: 'Binary Trees',
+  theory: `<b>Core Concept:</b> Hierarchical structure. Each node has at most 2 children (left, right).<br><br>
+  <b>Traversals:</b> Inorder (L,Root,R) | Preorder (Root,L,R) | Postorder (L,R,Root) | Level Order (BFS)<br><br>
+  <b>Key insight:</b> Most tree problems = DFS recursion with left/right subtree calls + combine at root`,
+  notes: [
+    '🔑 Inorder traversal of BST = sorted sequence',
+    '🔑 Height/depth: max(left, right) + 1',
+    '🔑 Diameter: left_height + right_height (passes through root)',
+    '🔑 Level order: use queue (BFS)',
+    '🔑 Serialize/Deserialize: preorder with null markers',
+    '🔑 Path sum: carry remaining sum down; leaf = node with no children',
+    '🔑 DFS return value: think about what each recursive call should return',
+  ],
+  complexity: [
+    ['DFS Traversal', 'O(n)', 'O(h) stack'],
+    ['BFS Level Order', 'O(n)', 'O(w) max width'],
+    ['Search in BST', 'O(h)', 'O(h)'],
+    ['Balanced tree height h', 'O(log n)', '-'],
+    ['Skewed tree height h', 'O(n)', '-'],
+  ],
+  cpp: `struct TreeNode { int val; TreeNode *left,*right; };
+
+// Inorder (recursive)
+void inorder(TreeNode* root, vector<int>& res){
+  if(!root) return;
+  inorder(root->left, res);
+  res.push_back(root->val);
+  inorder(root->right, res);
+}
+
+// Max Depth
+int maxDepth(TreeNode* root){
+  if(!root) return 0;
+  return 1+max(maxDepth(root->left), maxDepth(root->right));
+}
+
+// Level Order (BFS)
+vector<vector<int>> levelOrder(TreeNode* root){
+  if(!root) return {};
+  queue<TreeNode*> q; q.push(root);
+  vector<vector<int>> res;
+  while(!q.empty()){
+    int sz=q.size(); vector<int> level;
+    while(sz--){ auto node=q.front();q.pop(); level.push_back(node->val); if(node->left)q.push(node->left); if(node->right)q.push(node->right); }
+    res.push_back(level);
+  }
+  return res;
+}`,
+  python: `class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val, self.left, self.right = val, left, right
+
+# Inorder
+def inorder(root):
+    return inorder(root.left)+[root.val]+inorder(root.right) if root else []
+
+# Max Depth
+def maxDepth(root):
+    if not root: return 0
+    return 1 + max(maxDepth(root.left), maxDepth(root.right))
+
+# Level Order (BFS)
+from collections import deque
+def level_order(root):
+    if not root: return []
+    q, res = deque([root]), []
+    while q:
+        level = []
+        for _ in range(len(q)):
+            node = q.popleft()
+            level.append(node.val)
+            if node.left: q.append(node.left)
+            if node.right: q.append(node.right)
+        res.append(level)
+    return res`,
+  questions: {
+    easy: [
+      { name: 'Maximum Depth of Binary Tree', url: 'https://leetcode.com/problems/maximum-depth-of-binary-tree/', companies: ['Amazon','Google','Meta'], pattern: 'DFS' },
+      { name: 'Invert Binary Tree', url: 'https://leetcode.com/problems/invert-binary-tree/', companies: ['Amazon','Google'], pattern: 'DFS/BFS' },
+      { name: 'Symmetric Tree', url: 'https://leetcode.com/problems/symmetric-tree/', companies: ['Amazon','Google','Microsoft'], pattern: 'DFS Mirror check' },
+      { name: 'Path Sum', url: 'https://leetcode.com/problems/path-sum/', companies: ['Amazon','Microsoft'], pattern: 'DFS' },
+      { name: 'Same Tree', url: 'https://leetcode.com/problems/same-tree/', companies: ['Amazon','Google'], pattern: 'DFS' },
+      { name: 'Subtree of Another Tree', url: 'https://leetcode.com/problems/subtree-of-another-tree/', companies: ['Amazon','Google'], pattern: 'DFS + same tree' },
+      { name: 'Merge Two Binary Trees', url: 'https://leetcode.com/problems/merge-two-binary-trees/', companies: ['Amazon'], pattern: 'DFS' },
+    ],
+    medium: [
+      { name: 'Binary Tree Level Order Traversal', url: 'https://leetcode.com/problems/binary-tree-level-order-traversal/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'BFS' },
+      { name: 'Lowest Common Ancestor', url: 'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'DFS' },
+      { name: 'Binary Tree Right Side View', url: 'https://leetcode.com/problems/binary-tree-right-side-view/', companies: ['Amazon','Meta'], pattern: 'BFS/DFS' },
+      { name: 'Count Good Nodes in Binary Tree', url: 'https://leetcode.com/problems/count-good-nodes-in-binary-tree/', companies: ['Amazon','Google'], pattern: 'DFS with max' },
+      { name: 'Diameter of Binary Tree', url: 'https://leetcode.com/problems/diameter-of-binary-tree/', companies: ['Amazon','Google'], pattern: 'DFS global max' },
+      { name: 'Validate BST', url: 'https://leetcode.com/problems/validate-binary-search-tree/', companies: ['Amazon','Google','Microsoft'], pattern: 'DFS with bounds' },
+      { name: 'Construct from Preorder+Inorder', url: 'https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/', companies: ['Amazon','Google','Microsoft'], pattern: 'Divide & Conquer' },
+      { name: 'Path Sum II (all paths)', url: 'https://leetcode.com/problems/path-sum-ii/', companies: ['Amazon','Microsoft'], pattern: 'Backtracking DFS' },
+    ],
+    hard: [
+      { name: 'Binary Tree Maximum Path Sum', url: 'https://leetcode.com/problems/binary-tree-maximum-path-sum/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'DFS global max' },
+      { name: 'Serialize and Deserialize Binary Tree', url: 'https://leetcode.com/problems/serialize-and-deserialize-binary-tree/', companies: ['Amazon','Google','Meta'], pattern: 'DFS/BFS' },
+      { name: 'Binary Tree Cameras', url: 'https://leetcode.com/problems/binary-tree-cameras/', companies: ['Google'], pattern: 'Greedy DFS' },
+    ]
+  }
+},
+{
+  id: 'bst', icon: '🔎', color: '#2a1a2a', title: 'Binary Search Trees',
+  theory: `<b>Core Concept:</b> BST Property: left < node < right for every node. Enables O(log n) search in balanced trees.<br><br>
+  <b>Key operations:</b> Search, Insert, Delete, Inorder (sorted), LCA, Successor/Predecessor`,
+  notes: [
+    '🔑 Inorder traversal of BST gives sorted sequence — use this insight!',
+    '🔑 BST search: go left if target < node, right if target > node',
+    '🔑 Kth smallest: inorder traversal count to k',
+    '🔑 LCA in BST: if both p,q < node → go left; if both > node → go right; else node is LCA',
+    '🔑 Delete node: 3 cases — leaf, one child, two children (replace with inorder successor)',
+    '🔑 Balanced BST: AVL trees (height diff ≤ 1), Red-Black trees (used in C++ map/set)',
+    '🔑 BST from sorted array: always pick middle as root for balanced tree',
+  ],
+  complexity: [
+    ['Search/Insert/Delete (balanced)', 'O(log n)', 'O(h)'],
+    ['Search/Insert/Delete (skewed)', 'O(n)', 'O(n)'],
+    ['Inorder traversal', 'O(n)', 'O(h)'],
+    ['Kth smallest', 'O(h+k)', 'O(h)'],
+  ],
+  cpp: `// BST Search
+TreeNode* search(TreeNode* root, int val){
+  if(!root || root->val==val) return root;
+  if(val<root->val) return search(root->left, val);
+  return search(root->right, val);
+}
+
+// BST Insert
+TreeNode* insert(TreeNode* root, int val){
+  if(!root) return new TreeNode(val);
+  if(val<root->val) root->left=insert(root->left,val);
+  else root->right=insert(root->right,val);
+  return root;
+}
+
+// Kth Smallest (inorder)
+int kSmall(TreeNode* root, int& k){
+  if(!root) return -1;
+  int l=kSmall(root->left,k);
+  if(k==0) return l;
+  if(--k==0) return root->val;
+  return kSmall(root->right,k);
+}`,
+  python: `# BST Search
+def search(root, val):
+    if not root or root.val == val: return root
+    return search(root.left, val) if val < root.val else search(root.right, val)
+
+# LCA in BST
+def lca(root, p, q):
+    if p.val < root.val and q.val < root.val:
+        return lca(root.left, p, q)
+    if p.val > root.val and q.val > root.val:
+        return lca(root.right, p, q)
+    return root  # split point = LCA
+
+# Convert sorted array to BST
+def sorted_to_bst(nums):
+    if not nums: return None
+    mid = len(nums)//2
+    root = TreeNode(nums[mid])
+    root.left = sorted_to_bst(nums[:mid])
+    root.right = sorted_to_bst(nums[mid+1:])
+    return root`,
+  questions: {
+    easy: [
+      { name: 'Search in BST', url: 'https://leetcode.com/problems/search-in-a-binary-search-tree/', companies: ['Amazon'], pattern: 'BST Search' },
+      { name: 'Insert into BST', url: 'https://leetcode.com/problems/insert-into-a-binary-search-tree/', companies: ['Amazon','Google'], pattern: 'BST Insert' },
+      { name: 'Convert Sorted Array to BST', url: 'https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/', companies: ['Amazon','Google'], pattern: 'Divide & Conquer' },
+      { name: 'Minimum Absolute Difference in BST', url: 'https://leetcode.com/problems/minimum-absolute-difference-in-bst/', companies: ['Amazon'], pattern: 'Inorder' },
+    ],
+    medium: [
+      { name: 'Validate Binary Search Tree', url: 'https://leetcode.com/problems/validate-binary-search-tree/', companies: ['Amazon','Google','Microsoft'], pattern: 'DFS with bounds' },
+      { name: 'Kth Smallest Element in BST', url: 'https://leetcode.com/problems/kth-smallest-element-in-a-bst/', companies: ['Amazon','Google'], pattern: 'Inorder count' },
+      { name: 'LCA of BST', url: 'https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/', companies: ['Amazon','Microsoft'], pattern: 'BST property' },
+      { name: 'Delete Node in BST', url: 'https://leetcode.com/problems/delete-node-in-a-bst/', companies: ['Amazon','Google'], pattern: 'BST Delete' },
+      { name: 'BST Iterator', url: 'https://leetcode.com/problems/binary-search-tree-iterator/', companies: ['Amazon','Google','Microsoft'], pattern: 'Inorder + Stack' },
+      { name: 'Two Sum BST', url: 'https://leetcode.com/problems/two-sum-iv-input-is-a-bst/', companies: ['Amazon'], pattern: 'Inorder + HashSet' },
+    ],
+    hard: [
+      { name: 'Count of Smaller Numbers After Self', url: 'https://leetcode.com/problems/count-of-smaller-numbers-after-self/', companies: ['Google','Amazon'], pattern: 'BST / Merge Sort / BIT' },
+      { name: 'Recover Binary Search Tree', url: 'https://leetcode.com/problems/recover-binary-search-tree/', companies: ['Amazon','Google'], pattern: 'Inorder detect swap' },
+    ]
+  }
+},
+{
+  id: 'graphs', icon: '🕸️', color: '#0d1a2a', title: 'Graphs',
+  theory: `<b>Core Concept:</b> Nodes (vertices) connected by edges. Can be directed/undirected, weighted/unweighted, cyclic/acyclic.<br><br>
+  <b>Representations:</b> Adjacency List (sparse, preferred), Adjacency Matrix (dense), Edge List<br><br>
+  <b>Key algorithms:</b> BFS (shortest path unweighted), DFS (connectivity, cycles, topological sort), Dijkstra (weighted shortest path), Union-Find (connected components)`,
+  notes: [
+    '🔑 BFS = shortest path in unweighted graph. Always use queue + visited set',
+    '🔑 DFS on grid: 4-directional (dx,dy arrays) or 8-directional',
+    '🔑 Cycle detection: in directed graph use 3-color DFS (white=0, gray=1, black=2)',
+    '🔑 Topological sort: Kahn\'s algorithm (BFS indegree) or DFS post-order',
+    '🔑 Union-Find: best for dynamic connectivity, Kruskal\'s MST',
+    '🔑 Dijkstra: O((V+E) log V) with priority queue. Works only for non-negative weights',
+    '🔑 Bellman-Ford: O(VE), handles negative weights, detects negative cycles',
+    '🔑 Connected components in undirected: BFS/DFS or Union-Find',
+  ],
+  complexity: [
+    ['BFS/DFS', 'O(V+E)', 'O(V)'],
+    ['Dijkstra (PQ)', 'O((V+E)log V)', 'O(V)'],
+    ['Bellman-Ford', 'O(VE)', 'O(V)'],
+    ['Floyd-Warshall', 'O(V^3)', 'O(V^2)'],
+    ['Topological Sort', 'O(V+E)', 'O(V)'],
+    ['Union-Find ops', 'O(α(n)) ≈ O(1)', 'O(n)'],
+  ],
+  cpp: `// BFS
+vector<vector<int>> adj(n);
+vector<bool> vis(n,false);
+queue<int> q;
+q.push(src); vis[src]=true;
+while(!q.empty()){
+  int u=q.front(); q.pop();
+  for(int v:adj[u]) if(!vis[v]){ vis[v]=true; q.push(v); }
+}
+
+// Union-Find (with path compression + rank)
+vector<int> parent, rank_;
+void init(int n){ parent.resize(n); iota(parent.begin(),parent.end(),0); rank_.resize(n,0); }
+int find(int x){ return parent[x]==x?x:parent[x]=find(parent[x]); }
+bool unite(int x,int y){ x=find(x);y=find(y); if(x==y)return false; if(rank_[x]<rank_[y])swap(x,y); parent[y]=x; if(rank_[x]==rank_[y])rank_[x]++; return true; }
+
+// Topological Sort (Kahn's BFS)
+vector<int> indegree(n,0);
+for(auto& [u,v]:edges) indegree[v]++;
+queue<int> q;
+for(int i=0;i<n;i++) if(!indegree[i]) q.push(i);
+vector<int> topo;
+while(!q.empty()){ int u=q.front();q.pop();topo.push_back(u); for(int v:adj[u]) if(!--indegree[v]) q.push(v); }`,
+  python: `from collections import deque, defaultdict
+
+# BFS
+def bfs(graph, src, n):
+    vis = set([src])
+    q = deque([src])
+    while q:
+        u = q.popleft()
+        for v in graph[u]:
+            if v not in vis:
+                vis.add(v); q.append(v)
+
+# Union-Find
+class UnionFind:
+    def __init__(self, n): self.p = list(range(n)); self.r = [0]*n
+    def find(self, x): 
+        if self.p[x]!=x: self.p[x]=self.find(self.p[x])
+        return self.p[x]
+    def union(self, x, y):
+        x,y=self.find(x),self.find(y)
+        if x==y: return False
+        if self.r[x]<self.r[y]: x,y=y,x
+        self.p[y]=x
+        if self.r[x]==self.r[y]: self.r[x]+=1
+        return True
+
+# Topological Sort (Kahn's)
+from collections import defaultdict, deque
+def topo_sort(n, edges):
+    g = defaultdict(list); ind = [0]*n
+    for u,v in edges: g[u].append(v); ind[v]+=1
+    q = deque(i for i in range(n) if ind[i]==0)
+    order = []
+    while q:
+        u=q.popleft(); order.append(u)
+        for v in g[u]:
+            ind[v]-=1
+            if ind[v]==0: q.append(v)
+    return order if len(order)==n else []`,
+  questions: {
+    easy: [
+      { name: 'Find if Path Exists in Graph', url: 'https://leetcode.com/problems/find-if-path-exists-in-graph/', companies: ['Amazon'], pattern: 'BFS/DFS/UF' },
+      { name: 'Flood Fill', url: 'https://leetcode.com/problems/flood-fill/', companies: ['Amazon','Meta'], pattern: 'DFS Grid' },
+      { name: 'Number of Provinces', url: 'https://leetcode.com/problems/number-of-provinces/', companies: ['Amazon','Google'], pattern: 'DFS/Union-Find' },
+    ],
+    medium: [
+      { name: 'Number of Islands', url: 'https://leetcode.com/problems/number-of-islands/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'DFS/BFS Grid' },
+      { name: 'Clone Graph', url: 'https://leetcode.com/problems/clone-graph/', companies: ['Amazon','Google','Meta'], pattern: 'DFS + HashMap' },
+      { name: 'Course Schedule (Cycle detect)', url: 'https://leetcode.com/problems/course-schedule/', companies: ['Amazon','Google','Meta'], pattern: 'Topological Sort' },
+      { name: 'Course Schedule II', url: 'https://leetcode.com/problems/course-schedule-ii/', companies: ['Amazon','Google'], pattern: 'Topological Sort' },
+      { name: 'Pacific Atlantic Water Flow', url: 'https://leetcode.com/problems/pacific-atlantic-water-flow/', companies: ['Google','Amazon'], pattern: 'Multi-source BFS/DFS' },
+      { name: 'Surrounded Regions', url: 'https://leetcode.com/problems/surrounded-regions/', companies: ['Amazon','Google'], pattern: 'DFS boundary' },
+      { name: 'Rotting Oranges', url: 'https://leetcode.com/problems/rotting-oranges/', companies: ['Amazon','Google'], pattern: 'Multi-source BFS' },
+      { name: 'Network Delay Time (Dijkstra)', url: 'https://leetcode.com/problems/network-delay-time/', companies: ['Amazon','Google'], pattern: 'Dijkstra' },
+      { name: 'Redundant Connection (UF)', url: 'https://leetcode.com/problems/redundant-connection/', companies: ['Amazon'], pattern: 'Union-Find' },
+      { name: 'Accounts Merge (UF)', url: 'https://leetcode.com/problems/accounts-merge/', companies: ['Amazon','Google'], pattern: 'Union-Find/DFS' },
+    ],
+    hard: [
+      { name: 'Word Ladder', url: 'https://leetcode.com/problems/word-ladder/', companies: ['Amazon','Google','Meta'], pattern: 'BFS' },
+      { name: 'Alien Dictionary', url: 'https://leetcode.com/problems/alien-dictionary/', companies: ['Amazon','Meta'], pattern: 'Topological Sort' },
+      { name: 'Minimum Cost to Connect All Points (MST)', url: 'https://leetcode.com/problems/min-cost-to-connect-all-points/', companies: ['Amazon'], pattern: "Prim's/Kruskal's" },
+      { name: 'Swim in Rising Water', url: 'https://leetcode.com/problems/swim-in-rising-water/', companies: ['Google'], pattern: 'Dijkstra/BFS' },
+      { name: 'Critical Connections (Bridges)', url: 'https://leetcode.com/problems/critical-connections-in-a-network/', companies: ['Amazon'], pattern: 'Tarjan\'s DFS' },
+    ]
+  }
+},
+{
+  id: 'dp', icon: '🎯', color: '#1a2a1a', title: 'Dynamic Programming',
+  theory: `<b>Core Concept:</b> Break problem into overlapping subproblems. Cache results to avoid recomputation.<br><br>
+  <b>Two approaches:</b><br>
+  • <b>Top-down (memoization):</b> Recursion + cache (map/array)<br>
+  • <b>Bottom-up (tabulation):</b> Fill DP table iteratively<br><br>
+  <b>DP Patterns:</b> 1D DP, 2D DP, Interval DP, Knapsack, LCS/LIS, State machine DP`,
+  notes: [
+    '🔑 DP = Recursion + Memoization. Start by writing the recursive solution first!',
+    '🔑 Define state clearly: dp[i] = "what does this represent?"',
+    '🔑 Find recurrence: dp[i] = f(dp[i-1], dp[i-2], ...)',
+    '🔑 Initialize base cases carefully (dp[0], dp[1])',
+    '🔑 Knapsack 2D: dp[i][w] = max value with first i items, weight limit w',
+    '🔑 LCS: dp[i][j] = LCS of s1[0..i] and s2[0..j]',
+    '🔑 LIS: O(n log n) with patience sorting (binary search approach)',
+    '🔑 Space optimization: if dp[i] only depends on dp[i-1], use O(1) rolling variables',
+  ],
+  complexity: [
+    ['1D DP (Fibonacci)', 'O(n)', 'O(n) or O(1)'],
+    ['2D DP (LCS, Knapsack)', 'O(n*m)', 'O(n*m) or O(m)'],
+    ['LIS (naive)', 'O(n^2)', 'O(n)'],
+    ['LIS (patience sort)', 'O(n log n)', 'O(n)'],
+    ['Interval DP', 'O(n^3)', 'O(n^2)'],
+  ],
+  cpp: `// 1D DP (Climbing Stairs)
+vector<int> dp(n+1); dp[0]=1; dp[1]=1;
+for(int i=2;i<=n;i++) dp[i]=dp[i-1]+dp[i-2];
+
+// 0/1 Knapsack
+vector<vector<int>> dp(n+1, vector<int>(W+1,0));
+for(int i=1;i<=n;i++)
+  for(int w=0;w<=W;w++){
+    dp[i][w]=dp[i-1][w];
+    if(wt[i-1]<=w) dp[i][w]=max(dp[i][w], val[i-1]+dp[i-1][w-wt[i-1]]);
+  }
+
+// LCS
+for(int i=1;i<=n;i++) for(int j=1;j<=m;j++){
+  if(s1[i-1]==s2[j-1]) dp[i][j]=dp[i-1][j-1]+1;
+  else dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
+}
+
+// LIS (O(n log n))
+vector<int> tails;
+for(int x:nums){ auto it=lower_bound(tails.begin(),tails.end(),x); if(it==tails.end()) tails.push_back(x); else *it=x; }
+return tails.size();`,
+  python: `# 1D DP
+dp = [0]*(n+1); dp[0]=dp[1]=1
+for i in range(2,n+1): dp[i]=dp[i-1]+dp[i-2]
+
+# 0/1 Knapsack
+dp = [[0]*(W+1) for _ in range(n+1)]
+for i in range(1,n+1):
+    for w in range(W+1):
+        dp[i][w] = dp[i-1][w]
+        if wt[i-1]<=w: dp[i][w]=max(dp[i][w], val[i-1]+dp[i-1][w-wt[i-1]])
+
+# LCS
+dp = [[0]*(m+1) for _ in range(n+1)]
+for i in range(1,n+1):
+    for j in range(1,m+1):
+        if s1[i-1]==s2[j-1]: dp[i][j]=dp[i-1][j-1]+1
+        else: dp[i][j]=max(dp[i-1][j],dp[i][j-1])
+
+# LIS O(n log n)
+import bisect
+tails = []
+for x in nums:
+    i = bisect.bisect_left(tails, x)
+    if i == len(tails): tails.append(x)
+    else: tails[i] = x
+return len(tails)`,
+  questions: {
+    easy: [
+      { name: 'Climbing Stairs', url: 'https://leetcode.com/problems/climbing-stairs/', companies: ['Amazon','Google','Microsoft'], pattern: 'Fibonacci DP' },
+      { name: 'House Robber', url: 'https://leetcode.com/problems/house-robber/', companies: ['Amazon','Google','Microsoft'], pattern: '1D DP' },
+      { name: 'Min Cost Climbing Stairs', url: 'https://leetcode.com/problems/min-cost-climbing-stairs/', companies: ['Amazon'], pattern: '1D DP' },
+      { name: 'N-th Tribonacci', url: 'https://leetcode.com/problems/n-th-tribonacci-number/', companies: ['Amazon'], pattern: '1D DP' },
+    ],
+    medium: [
+      { name: 'Coin Change', url: 'https://leetcode.com/problems/coin-change/', companies: ['Amazon','Google','Meta','Microsoft'], pattern: 'Unbounded Knapsack' },
+      { name: 'Longest Increasing Subsequence', url: 'https://leetcode.com/problems/longest-increasing-subsequence/', companies: ['Amazon','Google','Microsoft'], pattern: 'LIS O(n log n)' },
+      { name: 'Unique Paths', url: 'https://leetcode.com/problems/unique-paths/', companies: ['Amazon','Google','Microsoft'], pattern: '2D DP' },
+      { name: 'Longest Common Subsequence', url: 'https://leetcode.com/problems/longest-common-subsequence/', companies: ['Amazon','Google','Microsoft'], pattern: 'LCS 2D DP' },
+      { name: 'Word Break', url: 'https://leetcode.com/problems/word-break/', companies: ['Amazon','Google','Meta'], pattern: '1D DP + set' },
+      { name: 'Partition Equal Subset Sum', url: 'https://leetcode.com/problems/partition-equal-subset-sum/', companies: ['Amazon','Google'], pattern: '0/1 Knapsack' },
+      { name: 'Decode Ways', url: 'https://leetcode.com/problems/decode-ways/', companies: ['Amazon','Meta','Google'], pattern: '1D DP' },
+      { name: 'House Robber II (circular)', url: 'https://leetcode.com/problems/house-robber-ii/', companies: ['Amazon'], pattern: '1D DP twice' },
+      { name: 'Jump Game (DP)', url: 'https://leetcode.com/problems/jump-game/', companies: ['Amazon','Google'], pattern: 'DP/Greedy' },
+      { name: 'Target Sum', url: 'https://leetcode.com/problems/target-sum/', companies: ['Amazon','Google'], pattern: '0/1 Knapsack' },
+    ],
+    hard: [
+      { name: 'Edit Distance', url: 'https://leetcode.com/problems/edit-distance/', companies: ['Amazon','Google','Microsoft'], pattern: '2D DP' },
+      { name: 'Burst Balloons', url: 'https://leetcode.com/problems/burst-balloons/', companies: ['Google','Amazon'], pattern: 'Interval DP' },
+      { name: 'Regular Expression Matching', url: 'https://leetcode.com/problems/regular-expression-matching/', companies: ['Google','Meta'], pattern: '2D DP' },
+      { name: 'Longest Valid Parentheses', url: 'https://leetcode.com/problems/longest-valid-parentheses/', companies: ['Google','Meta'], pattern: '1D DP / Stack' },
+      { name: 'Palindrome Partitioning II', url: 'https://leetcode.com/problems/palindrome-partitioning-ii/', companies: ['Amazon','Google'], pattern: 'DP + palindrome' },
+      { name: 'Distinct Subsequences', url: 'https://leetcode.com/problems/distinct-subsequences/', companies: ['Amazon'], pattern: '2D DP' },
+    ]
+  }
+},
+{
+  id: 'tries', icon: '🌲', color: '#2a1a3a', title: 'Tries (Prefix Trees)',
+  theory: `<b>Core Concept:</b> Tree for storing strings. Each node represents a character. Path from root to node = prefix.<br><br>
+  <b>Key operations:</b> Insert O(m), Search O(m), StartsWith O(m) — where m = string length<br><br>
+  <b>Use cases:</b> Autocomplete, spell checker, IP routing, word search`,
+  notes: [
+    '🔑 Each node has children[26] for lowercase English (or HashMap for flexibility)',
+    '🔑 Always mark end_of_word = True when inserting',
+    '🔑 Search must check end_of_word at the end — a prefix can exist without being a complete word',
+    '🔑 Trie vs HashMap: Trie is better for prefix queries; HashMap faster for exact lookup',
+    '🔑 Word Search II: build trie from word list, then DFS on board',
+    '🔑 XOR Trie: build trie of binary representations, maximize XOR by going opposite bit',
+  ],
+  complexity: [
+    ['Insert', 'O(m)', 'O(m)'],
+    ['Search', 'O(m)', 'O(m)'],
+    ['StartsWith', 'O(m)', 'O(m)'],
+    ['Space', 'O(n*m*26) worst', '-'],
+  ],
+  cpp: `struct TrieNode {
+  TrieNode* children[26] = {};
+  bool isEnd = false;
+};
+
+struct Trie {
+  TrieNode* root = new TrieNode();
+  
+  void insert(string& word){
+    auto cur = root;
+    for(char c : word){
+      if(!cur->children[c-'a']) cur->children[c-'a']=new TrieNode();
+      cur=cur->children[c-'a'];
+    }
+    cur->isEnd=true;
+  }
+  
+  bool search(string& word){
+    auto cur=root;
+    for(char c:word){ if(!cur->children[c-'a']) return false; cur=cur->children[c-'a']; }
+    return cur->isEnd;
+  }
+  
+  bool startsWith(string& prefix){
+    auto cur=root;
+    for(char c:prefix){ if(!cur->children[c-'a']) return false; cur=cur->children[c-'a']; }
+    return true;
+  }
+};`,
+  python: `class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+
+class Trie:
+    def __init__(self):
+        self.root = TrieNode()
+    
+    def insert(self, word):
+        cur = self.root
+        for c in word:
+            if c not in cur.children:
+                cur.children[c] = TrieNode()
+            cur = cur.children[c]
+        cur.is_end = True
+    
+    def search(self, word):
+        cur = self.root
+        for c in word:
+            if c not in cur.children: return False
+            cur = cur.children[c]
+        return cur.is_end
+    
+    def starts_with(self, prefix):
+        cur = self.root
+        for c in prefix:
+            if c not in cur.children: return False
+            cur = cur.children[c]
+        return True`,
+  questions: {
+    easy: [
+      { name: 'Implement Trie', url: 'https://leetcode.com/problems/implement-trie-prefix-tree/', companies: ['Amazon','Google','Microsoft'], pattern: 'Trie design' },
+    ],
+    medium: [
+      { name: 'Design Add and Search Words', url: 'https://leetcode.com/problems/design-add-and-search-words-data-structure/', companies: ['Meta','Google'], pattern: 'Trie + DFS' },
+      { name: 'Replace Words', url: 'https://leetcode.com/problems/replace-words/', companies: ['Amazon'], pattern: 'Trie prefix' },
+      { name: 'Map Sum Pairs', url: 'https://leetcode.com/problems/map-sum-pairs/', companies: ['Google'], pattern: 'Trie + sum' },
+      { name: 'Longest Word in Dictionary', url: 'https://leetcode.com/problems/longest-word-in-dictionary/', companies: ['Amazon','Google'], pattern: 'Trie' },
+      { name: 'Index Pairs of a String', url: 'https://leetcode.com/problems/index-pairs-of-a-string/', companies: ['Amazon'], pattern: 'Trie search' },
+    ],
+    hard: [
+      { name: 'Word Search II', url: 'https://leetcode.com/problems/word-search-ii/', companies: ['Amazon','Google','Meta'], pattern: 'Trie + Backtracking DFS' },
+      { name: 'Maximum XOR of Two Numbers', url: 'https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/', companies: ['Google'], pattern: 'XOR Trie (binary)' },
+      { name: 'Stream of Characters', url: 'https://leetcode.com/problems/stream-of-characters/', companies: ['Amazon'], pattern: 'Trie + suffix search' },
+    ]
+  }
+}
+];
+
+// ===== RENDER ENGINE =====
+function buildNav(){
+  const navList = document.getElementById('nav-list');
+  navList.innerHTML = '';
+  TOPICS.forEach((t,i) => {
+    const done = countDone(t.id);
+    const total = countTotal(t);
+    const div = document.createElement('div');
+    div.className = 'nav-item';
+    div.id = 'nav-'+t.id;
+    div.innerHTML = `<span class="nav-num">${String(i+1).padStart(2,'0')}</span>${t.icon} ${t.title}<span style="margin-left:auto;font-size:11px;color:${done===total?'#3fb950':'#8b949e'}">${done}/${total}</span>`;
+    div.onclick = () => showSection(t.id);
+    navList.appendChild(div);
+  });
+  const githubDiv = document.createElement('div');
+  githubDiv.className = 'nav-item';
+  githubDiv.id = 'nav-github';
+  githubDiv.innerHTML = `🐙 GitHub Setup`;
+  githubDiv.onclick = () => showSection('github');
+  navList.appendChild(githubDiv);
+}
+
+function countTotal(t){ return t.questions.easy.length + t.questions.medium.length + t.questions.hard.length; }
+function countDone(id){ const k=`done_${id}`; try{ return JSON.parse(localStorage.getItem(k)||'[]').length; }catch{ return 0; } }
+function getDone(id){ try{ return new Set(JSON.parse(localStorage.getItem(`done_${id}`)||'[]')); }catch{ return new Set(); } }
+function toggleDone(id,qname){
+  const done = getDone(id);
+  if(done.has(qname)) done.delete(qname); else done.add(qname);
+  localStorage.setItem(`done_${id}`, JSON.stringify([...done]));
+  buildNav(); updateGlobalStats(); renderTopic(id);
+}
+
+function updateGlobalStats(){
+  let td=0,tt=0;
+  TOPICS.forEach(t=>{ td+=countDone(t.id); tt+=countTotal(t); });
+  document.getElementById('total-done').textContent=td;
+  document.getElementById('total-qs').textContent=tt;
+  document.getElementById('pct-done').textContent=Math.round(td/tt*100)+'%';
+  document.getElementById('globalProgress').style.width=(td/tt*100)+'%';
+}
+
+function buildQList(topicId, qs, diff){
+  const done = getDone(topicId);
+  if(!qs.length) return '';
+  const label = diff==='easy'?'Easy':diff==='medium'?'Medium':'Hard';
+  const cls = `diff-${diff}`;
+  let html = `<div class="difficulty-group"><span class="difficulty-label ${cls}">${label} (${qs.length})</span>`;
+  qs.forEach(q => {
+    const isDone = done.has(q.name);
+    const companies = q.companies.map(c=>`<span class="q-company">${c}</span>`).join('');
+    html += `<div class="q-item">
+      <div class="q-check ${isDone?'done':''}" onclick="toggleDone('${topicId}','${q.name.replace(/'/g,"\\'")}')"></div>
+      <div class="q-info">
+        <div class="q-name"><a href="${q.url}" target="_blank">${q.name}</a></div>
+        <div class="q-meta">${companies}<span class="q-pattern">${q.pattern}</span></div>
+      </div>
+    </div>`;
+  });
+  return html + '</div>';
+}
+
+function renderTopic(id){
+  const t = TOPICS.find(x=>x.id===id);
+  if(!t) return;
+  const el = document.getElementById('section-'+id);
+  const done=countDone(id), total=countTotal(t);
+  el.innerHTML = `
+    <div class="topic-header">
+      <div class="topic-icon" style="background:${t.color}">${t.icon}</div>
+      <div><div class="topic-title">${t.title}</div><div class="topic-subtitle">Progress: ${done}/${total} solved</div></div>
+    </div>
+    
+    <!-- THEORY -->
+    <div class="card">
+      <div class="card-title">📖 Theory & Core Concepts</div>
+      <p style="color:var(--text2);font-size:13px;line-height:1.7;">${t.theory}</p>
+    </div>
+    
+    <!-- NOTES -->
+    <div class="card">
+      <div class="card-title">📌 Must-Know Notes (Interview Critical)</div>
+      ${t.notes.map(n=>`<div style="padding:4px 0;color:var(--text2);font-size:13px;">${n}</div>`).join('')}
+    </div>
+    
+    <!-- COMPLEXITY -->
+    <div class="card">
+      <div class="card-title">⏱️ Time & Space Complexity</div>
+      <table class="complexity-table">
+        <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+        ${t.complexity.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}
+      </table>
+    </div>
+    
+    <!-- CODE -->
+    <div class="card">
+      <div class="card-title">💻 Code Templates</div>
+      <div class="lang-tabs">
+        <div class="lang-tab active" id="tab-cpp-${id}" onclick="showLang('${id}','cpp')">C++</div>
+        <div class="lang-tab" id="tab-py-${id}" onclick="showLang('${id}','py')">Python</div>
+      </div>
+      <div id="code-cpp-${id}" class="code-block"><pre><code>${escHtml(t.cpp)}</code></pre></div>
+      <div id="code-py-${id}" class="code-block" style="display:none"><pre><code>${escHtml(t.python)}</code></pre></div>
+    </div>
+    
+    <!-- QUESTIONS -->
+    <div class="card">
+      <div class="card-title">🎯 Practice Questions (${total} total — with Company Tags)</div>
+      <div class="questions-section">
+        ${buildQList(id, t.questions.easy, 'easy')}
+        ${buildQList(id, t.questions.medium, 'medium')}
+        ${buildQList(id, t.questions.hard, 'hard')}
+      </div>
+    </div>
+  `;
+}
+
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function showLang(id, lang){
+  document.getElementById(`code-cpp-${id}`).style.display = lang==='cpp'?'':'none';
+  document.getElementById(`code-py-${id}`).style.display = lang==='py'?'':'none';
+  document.getElementById(`tab-cpp-${id}`).className = 'lang-tab'+(lang==='cpp'?' active':'');
+  document.getElementById(`tab-py-${id}`).className = 'lang-tab'+(lang==='py'?' active':'');
+}
+
+function showSection(id){
+  document.querySelectorAll('.topic-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('section-home').style.display = id==='home' ? 'block' : 'none';
+  if(id !== 'home'){
+    const sec = document.getElementById('section-'+id);
+    if(sec){ sec.classList.add('active'); if(id!=='github') renderTopic(id); }
+    const nav = document.getElementById('nav-'+id);
+    if(nav) nav.classList.add('active');
+  }
+}
+
+function filterTopics(q){
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.style.display = el.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+// Init
+function init(){
+  const container = document.getElementById('topics-container');
+  TOPICS.forEach(t=>{
+    const div = document.createElement('div');
+    div.id = 'section-'+t.id;
+    div.className = 'topic-section';
+    container.appendChild(div);
+  });
+  buildNav();
+  updateGlobalStats();
+  // count total
+  let tt=0; TOPICS.forEach(t=>tt+=countTotal(t));
+  document.getElementById('total-qs').textContent=tt;
+  document.getElementById('section-home').style.display='block';
+}
+
+init();
+</script>
+</body>
+</html>
